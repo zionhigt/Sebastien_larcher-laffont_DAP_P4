@@ -1,1 +1,1 @@
-** CHESTER
+**CHESS MANAGER**
