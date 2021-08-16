@@ -15,6 +15,10 @@ from chessmanager.controllers.rating import RatingCtrl
 
 from termcolor import colored as _c
 
+import json
+
+from random import randint
+
 BASE_CTRL = BaseCtrl()
 tourneys_view = TourneysView()
 player_view = PlayerView()
@@ -26,52 +30,38 @@ PLAYER_CTRL = PlayerCtrl(player_view, BASE_CTRL)
 DIGEST_CTRL = DigestCtrl(digest_view, BASE_CTRL)
 RATING_CTRL = RatingCtrl(rating_view, BASE_CTRL)
 
+def makeItems(model, config):
+    for field in config:
+        if config[field] != "default":
+            value = config[field]
+        else:
+            value = model.get_field(field)['default']
+        model.set_field_value(field, value)
+    model.load()
+
+
 new_tourney = {
     'name': "chessmanager",
     'at_date': "default",
     'at_place': "cherbourg",
-    'turns': 'default',
-    'time_handler': 'default'
+    'turns': "default",
+    'time_handler': "default"
 }
 
 tourney_index = BASE_CTRL.add_tourney()
 tourney = BASE_CTRL.get_tourney_by_index(tourney_index)
-for field in new_tourney:
-    if field != "default":
-        value = new_tourney[field]
-    else:
-        value = BASE_CTRL.get_field(filed)['default']
+makeItems(tourney, new_tourney)
 
-    tourney.set_field_value(field, value)
-tourney.load()
+with open("./data/json/players.json", 'r') as players_file:
+    players = json.load(players_file)
+    for player_config in players:
+        player_index = BASE_CTRL.add_player()
+        player = BASE_CTRL.get_player_by_index(player_index)
+        makeItems(player, player_config)
+        score_player = randint(0, 15)
+        player.add_point(score_player)
 
-new_player = {
-    'first_name': "Sébastien",
-    'last_name': "Larcher",
-    'at_date': "11/06/1990"
-}
-
-new_player1 = {
-    'first_name': "Zion",
-    'last_name': "Hight",
-    'at_date': "11/06/1990"
-}
-
-player_index = BASE_CTRL.add_player()
-player1_index = BASE_CTRL.add_player()
-player = BASE_CTRL.get_player_by_index(player_index)
-player1 = BASE_CTRL.get_player_by_index(player1_index)
-for field in new_player:
-    if field != "default":
-        value = new_player[field]
-        value1 = new_player1[field]
-    else:
-        value = BASE_CTRL.get_field(field)['default']
-        value1 = BASE_CTRL.get_field(field)['default']
-
-    player.set_field_value(field, value)
-    player1.set_field_value(field, value1)
-player.load()
+    players_file.close()
 
 class HomeCtrl(Ctrl):
     def __init__(self, view):

@@ -6,11 +6,12 @@ class Player(Schema):
         config = {
                 'first_name': {'required': True},
                 'last_name': {'required': True},
-                'at_date': {'default': date.today().strftime("%d/%m/20%y")},
+                'at_date': {'required': True, 'type': date},
             }
         super().__init__(config)
 
         self.score = 0
+        self.rating = "NA"
     
     def get_score(self):
         return self.score

@@ -45,13 +45,14 @@ class Table:
 
 
             max_width = len(max(column, key=len))
+            if max_width > self.max_char_per_cell:
+                max_width = self.max_char_per_cell
             string_column = []
             cell_count = 0
             for cell in column:
                 offset = self.max_char_per_cell
                 if len(cell) > offset:
-                    max_width = offset + 4
-                    cell = cell[0:offset] + " ..."
+                    cell = cell[0:(offset - 3)] + "..."
                 has_longer = max_width - len(cell)
                 cell_string = self.text_to_cell(cell, has_longer)
                 if cell_count == 0:

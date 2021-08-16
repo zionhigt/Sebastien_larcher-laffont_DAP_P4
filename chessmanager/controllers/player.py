@@ -7,13 +7,15 @@ class PlayerCtrl(Ctrl):
         self.view = view
 
         self.base_actions = [
-            ('Liste des joueurs', True, 'show_players'),
+            ('Liste des joueurs par noms', True, 'show_players_by_name'),
+            ('Liste des joueurs par scores', True, 'show_players_by_score'),
             ('Ajouter un joueurs', False, 'add_player'),
             ('Retour au menu principal', False, 'return')
         ]
 
         self.actions_callbacks = {
-            'show_players': self.show_players,
+            'show_players_by_name': self.show_players('name'),
+            'show_players_by_score': self.show_players('score'),
             'add_player': self.add_player,
             'return': self.exit
         }
@@ -22,16 +24,39 @@ class PlayerCtrl(Ctrl):
     def actions_rules(self):
         base_actions = list(map(lambda x: list(x), self.base_actions))
         if len(self.base_ctrl.get_all_players()) != 0:
+            #No player
             base_actions[0][1] = False
+            base_actions[1][1] = False
         
         return base_actions
+     
+    def get_players_sorted_by_name(self, available_players):
+        sorted_player = sorted(available_players, key=lambda x: x.first_name['value'])
+        return sorted_player
 
-    def show_players(self):
-        players = self.base_ctrl.get_all_players()
-        self.view.show_available_players(players)
-        self.show_available_actions()
-        return
+    def get_players_sorted_by_score(self, available_players):
+        sorted_player = sorted(available_players, key=lambda x: x.score, reverse=True)
+        return sorted_player
 
+    def show_players(self, sort=None):
+        
+        def closure ():
+            sorts_methods = {
+            'name': self.get_players_sorted_by_name,
+            'score': self.get_players_sorted_by_score
+            }
+            all_players = self.base_ctrl.get_all_players()
+            if sort is None:
+                players = all_players
+            else:
+                players = sorts_methods[sort](all_players)
+
+                self.view.show_available_players(players)
+                self.show_available_actions()
+                return
+
+        return closure
+        
     def show_available_actions(self):
         actions_available = self.actions_rules()
         self.show_actions(actions_available, self.actions_callbacks)

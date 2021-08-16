@@ -1,5 +1,7 @@
 from chessmanager.models.schemas.error import *
 
+from datetime import date
+
 class Schema:
     def __init__(self, config=None):
         if config is None:
@@ -29,6 +31,13 @@ class Schema:
                 except KeyError:
                     config_field['default'] = None
 
+                try:
+                    config_field['type']
+
+                except KeyError:
+                    config_field['type'] = str
+
+
                 if config_field['required']:
                     self.required_keys.append(config_key)
 
@@ -51,13 +60,34 @@ class Schema:
         except KeyError:
             return False
 
+    def is_valide_field_type(self, field):
+        if field['type'] is date:
+            try:
+                field_date = date.fromisoformat(field['value'])
+                return True
+            
+            except ValueError:
+                return False
+
+        else:
+            try:
+                field['type'](field['value'])
+                return True
+
+        
+            except ValueError:
+                return False
+
     def is_valide_field(self, key):
         field = self.get_field(key)
-        if field['required']:
-            if field['value'] is not None and field['value'] != "":
+        if field['value'] is not None and field['value'] != "":
+            if self.is_valide_field_type(field):
                 return True
+                
         else:
-            return True
+            if not field['required']:
+                return True
+
         return False
     
     def set_field_value(self, field_name, value):
