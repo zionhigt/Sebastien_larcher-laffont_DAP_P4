@@ -1,14 +1,14 @@
 from chessmanager.models.schemas.error import *
+# from chessmanager.models.schemas.type import time_handler
 
 from datetime import date
 
 class Schema:
     def __init__(self, config=None):
-        if config is None:
-            raise SchemaEmptyFoundError(config)
-        if len(config.keys()) == 0:
-            raise SchemaEmptyFoundError(config)
-        else:
+        if config is not None:
+            if len(config.keys()) == 0:
+                raise SchemaEmptyFoundError(config)
+                
             self.required_keys = []
             for config_key in config.keys():
                 config_field = config[config_key]
@@ -93,7 +93,10 @@ class Schema:
     def set_field_value(self, field_name, value):
         if self.is_exist_field(field_name):
             old_field_value = self.config[field_name]['value']
-            self.config[field_name]['value'] = value
+            if self.config[field_name]['type'] is not date:
+                self.config[field_name]['value'] = self.config[field_name]['type'](value)
+            else:
+                self.config[field_name]['value'] = value
 
             if not self.is_valide_field(field_name):
                 self.config[field_name]['value'] = old_field_value

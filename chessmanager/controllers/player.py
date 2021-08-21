@@ -8,14 +8,14 @@ class PlayerCtrl(Ctrl):
 
         self.base_actions = [
             ('Liste des joueurs par noms', True, 'show_players_by_name'),
-            ('Liste des joueurs par scores', True, 'show_players_by_score'),
+            ('Classement des joueurs', True, 'show_players_by_rate'),
             ('Ajouter un joueurs', False, 'add_player'),
             ('Retour au menu principal', False, 'return')
         ]
 
         self.actions_callbacks = {
             'show_players_by_name': self.show_players('name'),
-            'show_players_by_score': self.show_players('score'),
+            'show_players_by_rate': self.show_players('rate'),
             'add_player': self.add_player,
             'return': self.exit
         }
@@ -31,11 +31,11 @@ class PlayerCtrl(Ctrl):
         return base_actions
      
     def get_players_sorted_by_name(self, available_players):
-        sorted_player = sorted(available_players, key=lambda x: x.first_name['value'])
+        sorted_player = sorted(available_players, key=lambda x: x.last_name['value'])
         return sorted_player
 
-    def get_players_sorted_by_score(self, available_players):
-        sorted_player = sorted(available_players, key=lambda x: x.score, reverse=True)
+    def get_players_sorted_by_rate(self, available_players):
+        sorted_player = sorted(available_players, key=lambda x: x.rating['value'])
         return sorted_player
 
     def show_players(self, sort=None):
@@ -43,7 +43,7 @@ class PlayerCtrl(Ctrl):
         def closure ():
             sorts_methods = {
             'name': self.get_players_sorted_by_name,
-            'score': self.get_players_sorted_by_score
+            'rate': self.get_players_sorted_by_rate
             }
             all_players = self.base_ctrl.get_all_players()
             if sort is None:
@@ -72,7 +72,7 @@ class PlayerCtrl(Ctrl):
         else:
             self.base_ctrl.delete_player_by_index(new_player_index)
 
-        self.run()
+        self.show_available_actions()
         return
 
     def run(self):

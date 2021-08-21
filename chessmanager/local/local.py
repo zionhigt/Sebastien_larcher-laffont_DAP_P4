@@ -9,7 +9,13 @@ class Local:
                 'last_name': 'Nom',
                 'first_name': 'Prénom',
                 'score': 'Score',
-                'coment': 'Description'
+                'rating': 'Rang',
+                'comment': 'Description',
+                'time_handler': 'Contrôleur de temps',
+                'turns': 'Nombre de tours',
+                'DONE': 'Terminé.e',
+                'PROCESS': 'En cours',
+                'AWAIT': 'En attente'
             }
         }
 
@@ -18,3 +24,6 @@ class Local:
             return self.translator[self.local][key]
         except KeyError:
             return key
+
+t = Local()
+_t = t._t

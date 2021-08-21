@@ -3,10 +3,8 @@ from termcolor import colored as _c
 
 class Table:
     def __init__(self, body):
-
         self.head_text_color = "grey"
         self.head_background_color = "on_white"
-
         self.body = body
         self.string_body = ""
         self.max_char_per_cell = 32

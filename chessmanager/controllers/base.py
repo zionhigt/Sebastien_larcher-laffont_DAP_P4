@@ -1,10 +1,10 @@
 from chessmanager.models.player import Player
-from chessmanager.models.tourney import Tourney
+from chessmanager.models.tournament import Tournament
 
 class BaseCtrl:
     def __init__(self):
         self.available_players = []
-        self.available_tourney = []
+        self.available_tournament = []
     
     def add_player(self):
 
@@ -25,21 +25,21 @@ class BaseCtrl:
 
         return self.available_players
 
-    def add_tourney(self):
+    def add_tournament(self):
 
-        tourney = Tourney()
-        self.available_tourney.append(tourney)
+        tournament = Tournament()
+        self.available_tournament.append(tournament)
 
-        return self.available_tourney.index(tourney)
+        return self.available_tournament.index(tournament)
 
-    def get_tourney_by_index(self, index):
+    def get_tournament_by_index(self, index):
 
-        return self.available_tourney[index]
+        return self.available_tournament[index]
 
-    def get_all_tourney(self):
+    def get_all_tournament(self):
 
-        return self.available_tourney
+        return self.available_tournament
 
-    def delete_tourney_by_index(self, index):
-        if len(self.available_tourney) > index:
-            del self.available_tourney[index]
+    def delete_tournament_by_index(self, index):
+        if len(self.available_tournament) > index:
+            del self.available_tournament[index]

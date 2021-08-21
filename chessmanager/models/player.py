@@ -7,16 +7,8 @@ class Player(Schema):
                 'first_name': {'required': True},
                 'last_name': {'required': True},
                 'at_date': {'required': True, 'type': date},
+                'rating': {'default': 0, 'type': int}
             }
         super().__init__(config)
 
-        self.score = 0
-        self.rating = "NA"
-    
-    def get_score(self):
-        return self.score
-    
-    def add_point(self, point):
-        self.score += point
-        return self.score
     

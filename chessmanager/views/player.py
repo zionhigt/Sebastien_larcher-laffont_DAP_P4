@@ -19,13 +19,12 @@ class PlayerView(View):
     def show_available_players(self, available_players):
         print(self.path)
         players_info = list(map(lambda x: [
-                x.first_name['value'],
+                str(x.rating['value']),
                 x.last_name['value'],
-                self.compute_age(x.at_date['value']),
-                str(x.score),
-                str(x.rating)
+                x.first_name['value'],
+                self.compute_age(x.at_date['value'])
             ], available_players))
-        head = ['Prénom', 'Nom', 'Age', 'Score', 'Classement']
+        head = ['Place', 'Nom', 'Prénom', 'Age']
         if len(players_info) > 0:
             print(_c(f"\nListe des joueurs", "grey", "on_yellow"))
             self.print_table(head, players_info)

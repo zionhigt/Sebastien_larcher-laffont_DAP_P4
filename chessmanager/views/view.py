@@ -1,12 +1,10 @@
 from chessmanager.views.table import Table
-from chessmanager.local.local import Local
+from chessmanager.local.local import _t
 
 import sys
 from datetime import date
 from termcolor import colored as _c
 
-LOCAL = Local()
-_t = LOCAL._t
 
 class View:
     def __init__(self):
@@ -101,7 +99,7 @@ class View:
             question = self.format_question_from_field(field, schema[field])
             already_asked = False
             while not model.is_valide_field(field) or not already_asked:
-                if already_asked:
+                if already_asked and user_choice != "":
                     self.print_error(f"Valeur inattendue pour le champ {_t(field)} = {user_choice}")
                 current_field = model.get_field(field)
                 if current_field['type'] is date:

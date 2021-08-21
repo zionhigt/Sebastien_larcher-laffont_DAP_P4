@@ -1,10 +1,12 @@
 from chessmanager.views.view import View
+from chessmanager.local.local import _t
 
 from termcolor import colored as _c
 
 from datetime import date
 
-class TourneysView(View):
+
+class TournamentsView(View):
     def __init__(self):
         super().__init__()
 
@@ -14,20 +16,20 @@ class TourneysView(View):
         self.print_help(self.helper_unloaded_menu)
         return
 
-    def show_tourneys_table(self, available_tourneys, select=False):
+    def show_tournaments_table(self, available_tournaments, select=False):
 
-        tourneys_indexs = list(range(len(available_tourneys)))
-        head_table = ["ID", "Nom", "Lieu", "Date", "Description"]
+        tournaments_indexs = list(range(len(available_tournaments)))
+        head_table = ["ID", "Nom", "Lieu", "Date", "Description", "État"]
         body_table = list(map(lambda x, y: [
             str(y),
             x.name['value'],
             x.at_place['value'],
             x.at_date['value'],
-            x.comment['value']
-            ], available_tourneys, tourneys_indexs))
+            x.comment['value'],
+            _t(x.state)
+            ], available_tournaments, tournaments_indexs))
 
         if len(body_table) > 0:
-            print(select)
             if not select:
                 head_table = head_table[1:]
                 body_table = list(map(lambda x: x[1:], body_table))
@@ -35,13 +37,13 @@ class TourneysView(View):
         else:
             print("")
 
-    def ask_for_load_tourney(self, available_tourney):
-        self.show_tourneys_table(available_tourney, select=True)
+    def ask_for_load_tournament(self, available_tournament):
+        self.show_tournaments_table(available_tournament, select=True)
         response_input = self.ask(f"\nPour charger un tournois entrez son {_c('ID', 'grey', 'on_white')}")
         return response_input
         
 if __name__ == '__main__':
 
     print()
-    print(TourneyView.show.__doc__)
+    print(tournamentView.show.__doc__)
 
