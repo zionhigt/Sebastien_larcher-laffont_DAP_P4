@@ -28,7 +28,8 @@ class TournamentCtrl(Ctrl):
             ('Terminer le tournoi', True, 'mark_as_done'),
             ('Voir les matchs d\'une ronde', True, 'show_round_matchs'),
             ('Voir les matchs du tournois', True, 'show_tournament_matchs'),
-            ('Retour à la sélection', False, 'return')
+            ('Retour à la sélection', False, 'return'),
+            ('Aide', False, 'show_help')
         ]
 
         self.action_callback = {
@@ -41,8 +42,14 @@ class TournamentCtrl(Ctrl):
             'mark_as_done': self.mark_as_done,
             'show_round_matchs': self.show_round_matchs,
             'show_tournament_matchs': self.show_tournament_matchs,
-            'return': self.exit
+            'return': self.exit,
+            'show_help': self.show_help
         }
+
+    def show_help(self):
+        self.view.show_help()
+        self.show_available_actions()
+
     def show_round_matchs(self):
         self.view.show_available_rounds(self.tournament_model.rounds, select=True)
         round_choiced = self.view.ask("\nEntrez l'ID de la ronde")
@@ -129,7 +136,7 @@ class TournamentCtrl(Ctrl):
         """
         is_quit = False
         players_not_in = self.get_players_not_in_tournament()
-        self.view.show_available_players(players_not_in, select=True)
+        self.view.show_players_out_of_tournament(players_not_in, select=True)
         user_choice = self.view.ask("\nEntrez les ID séparés par un espace \nEntrez 'c' pour créer un joueur ")
         players = self.base_ctrl.get_all_players()
         if user_choice == 'c':
@@ -169,7 +176,8 @@ class TournamentCtrl(Ctrl):
         """
 
         players = self.base_ctrl.get_all_players()
-        players_not_in = list(filter(lambda x: x not in self.tournament_model.players, players))
+        tournament_players = [player[0] for player in self.tournament_model.players]
+        players_not_in = [player for player in players if player not in tournament_players]
 
         return players_not_in
 
@@ -184,7 +192,7 @@ class TournamentCtrl(Ctrl):
 
     def get_players_sorted_by_rate(self, available_players, reverse=True):
 
-        sorted_players = sorted(available_players, key=lambda x: x[0].rating['value'], reverse=reverse)
+        sorted_players = sorted(available_players, key=lambda x: x[0].rating, reverse=reverse)
         return sorted_players
 
     def get_players_sorted_by_score(self, available_players):

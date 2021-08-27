@@ -35,7 +35,7 @@ class PlayerCtrl(Ctrl):
         return sorted_player
 
     def get_players_sorted_by_rate(self, available_players):
-        sorted_player = sorted(available_players, key=lambda x: x.rating['value'])
+        sorted_player = sorted(available_players, key=lambda x: x.rating)
         return sorted_player
 
     def show_players(self, sort=None):

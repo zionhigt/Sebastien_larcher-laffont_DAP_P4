@@ -59,7 +59,6 @@ with open("./data/json/players.json", 'r') as players_file:
         player = BASE_CTRL.get_player_by_index(player_index)
         makeItems(player, player_config)
         tournament.add_player(player)
-        player.set_field_value('rating', players.index(player_config) + 1)
 
 
     players_file.close()

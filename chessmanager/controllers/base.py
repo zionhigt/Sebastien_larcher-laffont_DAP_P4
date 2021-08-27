@@ -10,6 +10,7 @@ class BaseCtrl:
 
         player = Player()
         self.available_players.append(player)
+        player.rating = len(self.available_players)
         return self.available_players.index(player)
     
     def get_player_by_index(self, index):

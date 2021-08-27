@@ -4,8 +4,32 @@ class RatingCtrl:
         self.view = view
 
     def get_players_sorted_by_rate(self, available_players):
-        sorted_player = sorted(available_players, key=lambda x: x.rating['value'])
-        return sorted_player        
+        sorted_player = sorted(available_players, key=lambda x: x.rating)
+        return sorted_player
+
+    def set_player_rate(self, player, rate):
+        all_players = self.get_players_sorted_by_rate(self.base_ctrl.get_all_players())
+
+        if rate < 1:
+            return self.set_player_rate(player, 1)
+
+        if rate in range(len(all_players) + 1):
+            player_rating = player.rating
+
+            if rate < player_rating:
+                sub_rated_players = all_players[rate - 1 : player_rating - 1]
+                set_way = 1
+            else:
+                sub_rated_players = all_players[player_rating : rate]
+                set_way = -1
+
+            for sub_rated_player in sub_rated_players:
+                sub_rate = sub_rated_player.rating
+                sub_rated_player.rating = sub_rate + set_way
+
+            player.rating = rate
+        else:
+            return self.set_player_rate(player, len(all_players))
 
     def run(self):
         ## TODO
@@ -22,23 +46,8 @@ class RatingCtrl:
             player = all_players[int(player_choiced)]
             
             rate_choiced = self.view.ask(f"\nNouveau classement pour {player.first_name['value']}")
-
-            if int(rate_choiced) in range(len(all_players) + 1):
-                rate = int(rate_choiced)
-                player_rating = player.rating['value']
-
-                if rate < player_rating:
-                    sub_rated_players = all_players[rate - 1 : player_rating - 1]
-                    set_way = 1
-                else:
-                    sub_rated_players = all_players[player_rating : rate]
-                    set_way = -1
-
-                for sub_rated_player in sub_rated_players:
-                    sub_rate = sub_rated_player.rating['value']
-                    sub_rated_player.set_field_value('rating', sub_rate + set_way)
-
-                player.set_field_value('rating', rate)
+            self.set_player_rate(player, int(rate_choiced))
+            
 
             self.run()
         

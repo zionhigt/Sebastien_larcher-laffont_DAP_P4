@@ -9,26 +9,27 @@ from termcolor import colored as _c
 class View:
     def __init__(self):
         self.path = "Chessmanager>"
-        self.exemple_default = _c('Valeur par défaut', 'yellow')
-        self.exemple_required_without_default = self.format_question_from_field("Champ requis",{'required': True,'default': ""})
-        self.exemple_norequired_without_default = self.format_question_from_field("Optionel",{'required': False,'default': ""})
-        self.helper_field_list = [
+        self.helper_menu = "Pour naviguer dans les menus, entrez le numeros de ligne de l'actions"
+
+    def get_helper_menu(self):
+        return self.helper_menu
+
+    def get_helper_field(self):
+        exemple_default = _c('Valeur par défaut', 'yellow')
+        exemple_required_without_default = self.format_question_from_field("Champ requis",{'required': True,'default': ""})
+        exemple_norequired_without_default = self.format_question_from_field("Optionel",{'required': False,'default': ""})
+        helper_field_list = [
             _c("----------------------------------------------------------------------------------\n", 'white'),
-            f"({self.exemple_default})\t|ENTRER| pour conserver la valeur par default\n",
-            f"{self.exemple_required_without_default}\tEntrez une valeur correcte pour ce champ\n",
-            f"{self.exemple_norequired_without_default}\t\t|ENTRER| pour laisser vide\n",
+            f"({exemple_default})\t|ENTRER| pour conserver la valeur par default\n",
+            f"{exemple_required_without_default}\tEntrez une valeur correcte pour ce champ\n",
+            f"{exemple_norequired_without_default}\t\t|ENTRER| pour laisser vide\n",
             "[/q]\t\t\tQuitter l'édition\n",
             "[help]\t\t\tAfficher cette aide\n",
             "----------------------------------------------------------------------------------\n"
         ]
 
-        self.helper_field = "\n".join(self.helper_field_list)
-        self.helper_menu = "Pour naviguer dans les menus, entrez le numeros de ligne de l'actions"
-    def get_helper_menu(self):
-        return self.helper_menu
-
-    def get_helper_field(self):
-        return self.helper_field
+        helper_field = "\n".join(helper_field_list)
+        return helper_field
 
     def ask(self, question, lazy=True):
         response_input = input(f"\r{question} {_c(':', 'yellow')} ")
@@ -77,17 +78,25 @@ class View:
         day_question = self.format_question_from_field("--> Jour", {'required': True, 'default': default_day, 'type': int})
 
         year = self.ask(year_question)
-        if year == "":
+        if default_year == "":
+            while year == "" and date_field['required']:
+                year = self.ask(year_question)
+        else:
             year = default_year
 
         month = self.ask(month_question)
-        if month == "":
+        if default_month == "":
+            while month == "" and date_field['required']:
+                month = self.ask(month_question)
+        else:
             month = default_month
 
         day = self.ask(day_question)
-        if day == "":
+        if default_day == "":
+            while day == "" and date_field['required']:
+                day = self.ask(day_question)
+        else:
             day = default_day
-            
 
         return "{:02d}-{:02d}-{:02d}".format(int(year), int(month), int(day))
 
@@ -114,7 +123,7 @@ class View:
                 if user_choice.upper() == "/Q":
                         return False
                 if user_choice.upper() == "HELP":
-                    self.print_help(self.helper_field)
+                    self.print_help(self.get_helper_field())
                     continue
                     
 

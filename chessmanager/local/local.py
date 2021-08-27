@@ -4,6 +4,7 @@ class Local:
         self.translator = {
             'fr': {
                 'at_date': 'Date',
+                'birth_date': 'Date de naissance',
                 'at_place': 'Lieu',
                 'name': 'Nom',
                 'last_name': 'Nom',

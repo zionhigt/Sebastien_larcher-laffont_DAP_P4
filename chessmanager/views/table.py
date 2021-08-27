@@ -55,6 +55,8 @@ class Table:
                 cell_string = self.text_to_cell(cell, has_longer)
                 if cell_count == 0:
                     cell_string = f"|{_c(cell_string[1:], self.head_text_color, self.head_background_color)}"
+                    if "*" in cell_string:
+                        cell_string = cell_string.replace("*", _c("CG*", 'cyan', 'on_white'))
                 string_column.append(cell_string)
                 cell_count += 1
             string_columns.append(string_column)

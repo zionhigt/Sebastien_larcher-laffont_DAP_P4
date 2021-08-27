@@ -20,18 +20,51 @@ class TournamentView(View):
         now_date = date.today()
         return (now_date.year - birth_year)
 
+    def show_help(self):
+        symbole = _c('*', 'cyan')
+        help = [
+            "------------------------------------------AIDE TOURNOI------------------------------------\n",
+            "Liste des joueur par noms\tAffiche la liste des joueurs inscrit au tournoi\n\t\t\t\ttriée par ordre alphabétique du nom de famille",
+            "-------------------------------------------------------------------------------------------",
+            "Classement du tournois\t\tAffiche la liste des joueurs inscrit au tournoi\n\t\t\t\ttriée par ordre décroissant des points dans le tournoi",
+            "-------------------------------------------------------------------------------------------",
+            "Ajouter un joueur\t\tPermet d'inscrire un joueur au tournoi\n\t\t\t\tou de créer un nouveau profil qui\n\t\t\t\tseras ajouté a la liste général",
+            "-------------------------------------------------------------------------------------------",
+            "Démarer le tournoi\t\tGénere la premiere rondes de matchs",
+            "-------------------------------------------------------------------------------------------",
+            f"Abréviations {symbole}\t\t\tCT: Classement du Tournoi\n\t\t\t\tCG: Classement Général",
+            "-------------------------------------------------------------------------------------------",
+            ]
+        
+        print("\n".join(help))
+
+    def show_players_out_of_tournament(self, available_players, select=False):
+        players_index = range(len(available_players))
+        head = ['ID', 'Nom', 'Prénom', 'Age', 'CG*']
+        players_info = list(map(lambda x, y: [
+                str(y),
+                x.last_name['value'],
+                x.first_name['value'],
+                self.compute_age(x.birth_date['value']),
+                str(x.rating)
+            ], available_players, players_index))
+        if len(players_info) > 0:
+            if not select:
+                head = head[1:]
+                players_info = list(map(lambda x: x[1:], players_info))
+            self.print_table(head, players_info)
+
     def show_available_players(self, available_players, select=False):
         players_index = range(len(available_players))
-        head = ['ID', 'Nom', 'Prénom', 'Age', 'Score', 'Classement général']
+        head = ['ID', 'Nom', 'Prénom', 'Age', 'Score', "*"]
         players_info = list(map(lambda x, y: [
                 str(y),
                 x[0].last_name['value'],
                 x[0].first_name['value'],
-                self.compute_age(x[0].at_date['value']),
+                self.compute_age(x[0].birth_date['value']),
                 str(x[1]),
-                str(x[0].rating['value'])
+                str(x[0].rating)
             ], available_players, players_index))
-
         if len(players_info) > 0:
             if not select:
                 head = head[1:]

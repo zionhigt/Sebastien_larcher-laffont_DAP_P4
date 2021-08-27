@@ -15,10 +15,10 @@ class RatingView(View):
         players_index = range(len(available_players))
         players_info = list(map(lambda x, y: [
                 str(y),
-                str(x.rating['value']),
+                str(x.rating),
                 x.last_name['value'],
                 x.first_name['value'],
-                self.compute_age(x.at_date['value'])
+                self.compute_age(x.birth_date['value'])
             ], available_players, players_index))
         head = ['ID', 'Place', 'Nom', 'Prénom', 'Age']
         if len(players_info) > 0:
