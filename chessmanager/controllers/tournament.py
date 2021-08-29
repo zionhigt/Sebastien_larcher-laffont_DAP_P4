@@ -98,7 +98,6 @@ class TournamentCtrl(Ctrl):
 
             self.roundCtrl.run(self.tournament_model.rounds, persistant=False)
 
-
         return
 
     @compute_available_action
@@ -108,7 +107,8 @@ class TournamentCtrl(Ctrl):
         base_actions = list(map(lambda x: list(x), self.base_actions))
         if len(self.tournament_model.players) != 0:
             base_actions[0][1] = False
-            base_actions[1][1] = False
+            if len(self.tournament_model.rounds) and self.tournament_model.rounds[0].state == "DONE":
+                base_actions[1][1] = False
 
         base_actions[2][1] = self.tournament_model.started
         
@@ -215,8 +215,8 @@ class TournamentCtrl(Ctrl):
                 players = (all_players)
             else:
                 players = sorts_methods[sort](all_players)
-    
-            self.view.show_available_players(players)
+            show_tournament_rating = not self.actions_rules()[1][1]
+            self.view.show_available_players(players, tournament_rating=show_tournament_rating)
             self.show_available_actions()
             return
         return closure

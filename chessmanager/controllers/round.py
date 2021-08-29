@@ -86,19 +86,13 @@ class RoundCtrl(Ctrl):
         return base_actions
 
 
-    def split_players_list(self, first_time):
+    def split_players_list(self):
         players = self.current_round.players
-        if first_time:
-            if len(players) % 2:
-                players = self.current_round.players[:-1]
-                self.orphan_player = self.current_round.players[-1]
-            split_offset = int(len(players)/2)
-            self.players_in_game = (players[:split_offset], players[split_offset:])
-        else:
-            self.players_in_game = (
-                [player for player in players if players.index(player) %2 == 0], 
-                [player for player in players if players.index(player) %2 != 0]
-                )
+        if len(players) % 2:
+            players = self.current_round.players[:-1]
+            self.orphan_player = self.current_round.players[-1]
+        split_offset = int(len(players)/2)
+        self.players_in_game = (players[:split_offset], players[split_offset:])
         return self.players_in_game
 
     def run(self, rounds, persistant=True):
@@ -118,22 +112,59 @@ class RoundCtrl(Ctrl):
     def add_match(self, player_s1, player_s2):
         match = Match(player_s1, player_s2)
         self.current_round.matchs.append(match)
+        return
+
+    def is_already_met(self, player_s1, player_s2):
+        rounds_matchs = [
+            match for t_round in self.rounds for match in t_round.matchs]
+
+        all_meetings = [
+            [match.player_s1, match.player_s2] for match in rounds_matchs]
+
+        meeting = [player_s1, player_s2]
+        reverse_meeting = list(meeting)
+        reverse_meeting.reverse()
+
+        return (meeting in all_meetings) or (reverse_meeting in all_meetings)
 
     def match_making(self, first_time):
-        players_s1, players_s2 = self.split_players_list(first_time=first_time)
         rounds_matchs = [match for t_round in self.rounds for match in t_round.matchs]
-        all_meetings = list(map(lambda x: (x.player_s1, x.player_s2), rounds_matchs))
-        for i in range(len(players_s1)):
-            j = 0
-            player_s1 = players_s1[i]
-            player_s2 = players_s2[j]
-            while (player_s1, player_s2) in all_meetings or (player_s2, player_s1) in all_meetings:
-                j += 1
-                if j < len(player_s2) -1:
-                    player_s2 = players_s2[j]
-                else:
-                    self.view.print_error(f"Impossible de créer un match, {player_s1.first_name['value']} {player_s1.last_name['value']} à déjà rencontré tout le monde")
-                    return
-            self.add_match(player_s1, player_s2)
-            del players_s2[j]
+        all_meetings = list(map(lambda x: [x.player_s1, x.player_s2], rounds_matchs))
+        if first_time:
+            players_s1, players_s2 = self.split_players_list()
+
+            for i in range(len(players_s1)):
+                j = 0
+                player_s1 = players_s1[i]
+                player_s2 = players_s2[j]
+                
+                while self.is_already_met(player_s1, player_s2):
+                    j += 1
+                    if j < len(players_s2) -1:
+                        player_s2 = players_s2[j]
+                    else:
+                        self.view.print_error(f"Impossible de créer un match, {player_s1[0].first_name['value']} {player_s1[0].last_name['value']} à déjà rencontré tout le monde")
+                        return
+                        
+                self.add_match(player_s1, player_s2)
+                del players_s2[j]
+                
             
+        else:
+            players = [player for player in self.current_round.players]
+            
+            while len(players) >= 2:
+                # print([player[0].first_name['value'] for player in players])
+                j = 1
+                player_s1 = players[0]
+                player_s2 = players[j]
+                while self.is_already_met(player_s1, player_s2):
+                    j += 1
+                    player_s2 = players[j]
+
+                self.add_match(player_s1, player_s2)
+                del players[j]
+                del players[0]
+
+            if len(players) == 1:
+                self.orphan_player = players[0]

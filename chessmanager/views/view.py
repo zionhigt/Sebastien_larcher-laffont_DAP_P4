@@ -182,6 +182,5 @@ class View:
 
 if __name__ == '__main__':
 
-    print()
     print(View.show.__doc__)
 

@@ -44,6 +44,5 @@ class TournamentsView(View):
         
 if __name__ == '__main__':
 
-    print()
-    print(tournamentView.show.__doc__)
+    print(TournamentsView.show.__doc__)
 

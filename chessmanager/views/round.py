@@ -4,7 +4,6 @@ from termcolor import colored as _c
 
 class RoundView(View):
     def show_available_matchs(self, available_matchs, select=False):
-        print(available_matchs)
         matchs_index = range(len(available_matchs))
         head = ['ID','C J1', 'Joueur 1', 'PTS J1', 'PTS J2', 'Joueur 2', 'C J2']
         matchs_info = list(map(lambda x, y: [

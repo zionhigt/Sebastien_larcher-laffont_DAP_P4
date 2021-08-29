@@ -54,21 +54,27 @@ class TournamentView(View):
                 players_info = list(map(lambda x: x[1:], players_info))
             self.print_table(head, players_info)
 
-    def show_available_players(self, available_players, select=False):
+    def show_available_players(self, available_players, select=False, tournament_rating=False):
         players_index = range(len(available_players))
-        head = ['ID', 'Nom', 'Prénom', 'Age', 'Score', "*"]
-        players_info = list(map(lambda x, y: [
+        tournament_players_scores_sorted = sorted(available_players, key=lambda x: x[1], reverse=True)
+        tournament_players_rating = [tournament_players_scores_sorted.index(player) + 1 for player in available_players]
+        head = ['ID', 'Nom', 'Prénom', 'Age', 'Score', "CG*", "CT*"]
+        players_info = list(map(lambda x, y, z: [
                 str(y),
                 x[0].last_name['value'],
                 x[0].first_name['value'],
                 self.compute_age(x[0].birth_date['value']),
                 str(x[1]),
-                str(x[0].rating)
-            ], available_players, players_index))
+                str(x[0].rating),
+                str(z)
+            ], available_players, players_index, tournament_players_rating))
         if len(players_info) > 0:
             if not select:
                 head = head[1:]
                 players_info = list(map(lambda x: x[1:], players_info))
+            if not tournament_rating:
+                head = head[:-1]
+                players_info = list(map(lambda x: x[:-1], players_info))
             self.print_table(head, players_info)
 
     def show_available_rounds(self, available_rounds, select=False):
@@ -109,6 +115,5 @@ class TournamentView(View):
 
 if __name__ == '__main__':
 
-    print()
-    print(tournamentView.show.__doc__)
+    print(TournamentView.show.__doc__)
 
