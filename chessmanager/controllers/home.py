@@ -7,9 +7,6 @@ from chessmanager.controllers.tournaments import TournamentsCtrl
 from chessmanager.views.player import PlayerView
 from chessmanager.controllers.player import PlayerCtrl
 
-from chessmanager.views.digest import DigestView
-from chessmanager.controllers.digest import DigestCtrl
-
 from chessmanager.views.rating import RatingView
 from chessmanager.controllers.rating import RatingCtrl
 
@@ -20,14 +17,12 @@ import json
 from random import randint
 
 BASE_CTRL = BaseCtrl()
-tournaments_view = TournamentsView()
-player_view = PlayerView()
-digest_view = DigestView()
-rating_view = RatingView()
+tournaments_view = TournamentsView("Chessmanager>Tournois>")
+player_view = PlayerView("Chessmanager>Joueurs>")
+rating_view = RatingView("Chessmanager>Classement>")
 
 tournaments_CTRL = TournamentsCtrl(tournaments_view, BASE_CTRL)
 PLAYER_CTRL = PlayerCtrl(player_view, BASE_CTRL)
-DIGEST_CTRL = DigestCtrl(digest_view, BASE_CTRL)
 RATING_CTRL = RatingCtrl(rating_view, BASE_CTRL)
 
 def makeItems(model, config):

@@ -11,7 +11,8 @@ class TournamentsCtrl(Ctrl):
     def __init__(self, view, base_ctrl):
         self.view = view
         self.base_ctrl = base_ctrl
-        self.tournament_ctrl = TournamentCtrl(TournamentView(), self.base_ctrl)
+        tournamentView = TournamentView(self.view.path)
+        self.tournament_ctrl = TournamentCtrl(tournamentView, self.base_ctrl)
 
         # {text, hidden, callback}
         self.base_actions = [

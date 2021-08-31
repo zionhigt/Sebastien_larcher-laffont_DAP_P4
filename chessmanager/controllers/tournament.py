@@ -7,12 +7,12 @@ from chessmanager.controllers.ctrl import compute_available_action
 from termcolor import colored as _c
 from chessmanager.views.round import RoundView
 
-ROUND_VIEW = RoundView()
 
 class TournamentCtrl(Ctrl):
     def __init__(self, view, base_ctrl):
         self.view = view
-        self.roundCtrl = RoundCtrl(ROUND_VIEW) 
+        round_view = RoundView()
+        self.roundCtrl = RoundCtrl(round_view) 
         self.base_ctrl = base_ctrl
         self.tournament_model = None
         self.current_tournament_index = None
@@ -70,6 +70,7 @@ class TournamentCtrl(Ctrl):
         return
 
     def run_round(self):
+        self.roundCtrl.set_path()
         self.roundCtrl.run(self.tournament_model.rounds)
         if self.current_round.state == "DONE":
             self.tournament_model.update_players_scores()
@@ -89,7 +90,7 @@ class TournamentCtrl(Ctrl):
     def add_round(self):
         if len(self.tournament_model.rounds) < self.tournament_model.turns['value']:
             round_name = f"Round_{len(self.tournament_model.rounds) + 1}"
-            self.current_round = Round(round_name)
+            self.current_round = Round(round_name, self.tournament_model)
             self.tournament_model.add_round(self.current_round)
             self.current_round.players = self.get_players_sorted_by_rate(self.tournament_model.players, reverse=False)
             if len(self.tournament_model.rounds) > 1:

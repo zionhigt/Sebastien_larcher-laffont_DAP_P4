@@ -4,6 +4,8 @@ from termcolor import colored as _c
 from datetime import date
 
 class RatingView(View):
+    def __init__(self, path):
+        self.path = path
     def compute_age(self, birthday):
 
         birth_date = date.fromisoformat(birthday)

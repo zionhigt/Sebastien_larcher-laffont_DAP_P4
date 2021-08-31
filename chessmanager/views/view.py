@@ -1,7 +1,6 @@
 from chessmanager.views.table import Table
 from chessmanager.local.local import _t
 
-import sys
 from datetime import date
 from termcolor import colored as _c
 

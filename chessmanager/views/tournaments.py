@@ -1,3 +1,4 @@
+from os import path
 from chessmanager.views.view import View
 from chessmanager.local.local import _t
 
@@ -7,10 +8,10 @@ from datetime import date
 
 
 class TournamentsView(View):
-    def __init__(self):
+    def __init__(self, path):
         super().__init__()
 
-        self.path = "Chessmanager>Tournois>"
+        self.path = path
     
     def show_unloaded_helper(self):
         self.print_help(self.helper_unloaded_menu)

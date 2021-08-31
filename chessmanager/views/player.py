@@ -5,9 +5,9 @@ from termcolor import colored as _c
 from datetime import date
 
 class PlayerView(View):
-    def __init__(self):
+    def __init__(self, path):
         super().__init__()
-        self.path = "Chessmanager>Joueurs>"
+        self.path = path
 
     def compute_age(self, birthday):
 

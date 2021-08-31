@@ -3,6 +3,9 @@ from chessmanager.views.view import View
 from termcolor import colored as _c
 
 class RoundView(View):
+    def compute_path(self, tournament_name, current_name):
+        self.path = f"Chessmanager>Tournois>{tournament_name}>{current_name}>"
+        
     def show_available_matchs(self, available_matchs, select=False):
         matchs_index = range(len(available_matchs))
         head = ['ID','C J1', 'Joueur 1', 'PTS J1', 'PTS J2', 'Joueur 2', 'C J2']

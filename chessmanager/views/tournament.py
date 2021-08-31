@@ -7,11 +7,12 @@ from chessmanager.local.local import _t
 from datetime import date, datetime
 
 class TournamentView(View):
-    def __init__(self):
-        self.path = self.compute_path()
+    def __init__(self, from_path):
+        self.from_path = from_path
+        self.compute_path()
 
-    def compute_path(self, current_name="Tounoi"):
-        self.path = "Chessmanager>Tournois>" + current_name + ">"
+    def compute_path(self, current_name="Tournoi"):
+        self.path =  f"{self.from_path}{current_name}>"
 
     def compute_age(self, birthday):
 
