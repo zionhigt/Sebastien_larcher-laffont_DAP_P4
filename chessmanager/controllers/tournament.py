@@ -1,4 +1,3 @@
-from chessmanager.models.tournament import Tournament
 from chessmanager.models.round import Round
 from chessmanager.controllers.ctrl import Ctrl
 from chessmanager.controllers.round import RoundCtrl
@@ -10,9 +9,9 @@ from chessmanager.views.round import RoundView
 
 class TournamentCtrl(Ctrl):
     def __init__(self, view, base_ctrl):
-        self.view = view
+        super().__init__(view)
         round_view = RoundView()
-        self.roundCtrl = RoundCtrl(round_view) 
+        self.roundCtrl = RoundCtrl(round_view)
         self.base_ctrl = base_ctrl
         self.tournament_model = None
         self.current_tournament_index = None
@@ -112,7 +111,7 @@ class TournamentCtrl(Ctrl):
                 base_actions[1][1] = False
 
         base_actions[2][1] = self.tournament_model.started
-        
+
         if len(self.tournament_model.players) >= 2 and not self.tournament_model.started:
             base_actions[3][1] = False
 
@@ -121,7 +120,9 @@ class TournamentCtrl(Ctrl):
         if self.current_round and self.current_round.state != "DONE":
             base_actions[5][1] = False
 
-        if len(self.tournament_model.rounds) == self.tournament_model.turns['value'] and not self.tournament_model.ended:
+        hmany_rounds = len(self.tournament_model.rounds)
+        hmany_turns = self.tournament_model.turns['value']
+        if hmany_rounds == hmany_turns and not self.tournament_model.ended:
             if self.tournament_model.rounds[-1].state == "DONE":
                 base_actions[6][1] = False
 
@@ -143,7 +144,7 @@ class TournamentCtrl(Ctrl):
         if user_choice == 'c':
             new_player_index = self.base_ctrl.add_player()
             player = self.base_ctrl.get_player_by_index(new_player_index)
-            if self.view.asking_for_model(player) != False:
+            if self.view.asking_for_model(player) is not False:
                 player.load()
                 players = [player]
             else:
@@ -156,7 +157,7 @@ class TournamentCtrl(Ctrl):
                 if choiced_player != '':
                     if int(choiced_player) in range(0, len(players_not_in)):
                         players.append(players_not_in[int(choiced_player)])
-                
+
         if not is_quit:
             self.tournament_model.add_players(players)
             if len(players) > 0:
@@ -164,13 +165,12 @@ class TournamentCtrl(Ctrl):
                 if len(players) > 1:
                     sucess_message = f"\nont été ajoutés au tounois {self.tournament_model.name['value']}"
 
-                players_texts = list(map(lambda x: f"{x.first_name['value']} {x.last_name['value']}", players)) 
+                players_texts = list(map(lambda x: f"{x.first_name['value']} {x.last_name['value']}", players))
                 sucess_text = "\n".join(players_texts) + sucess_message
                 self.view.print_sucess(sucess_text)
 
         self.show_available_actions()
         return
-
 
     def get_players_not_in_tournament(self):
         """Give already known players not in this loaded tournament
@@ -183,20 +183,23 @@ class TournamentCtrl(Ctrl):
         return players_not_in
 
     def get_tournament_player_score(self, player):
-        all_players = [p[0] for p in self.touney_model.players]
+        all_players = [p[0] for p in self.tournament_model.players]
         player_index = all_players.index(player)
         return self.tournament_model.player[player_index][1]
 
-    def get_players_sorted_by_name(self, available_players):
+    @staticmethod
+    def get_players_sorted_by_name(available_players):
         sorted_players = sorted(available_players, key=lambda x: x[0].last_name['value'])
         return sorted_players
 
-    def get_players_sorted_by_rate(self, available_players, reverse=True):
+    @staticmethod
+    def get_players_sorted_by_rate(available_players, reverse=True):
 
         sorted_players = sorted(available_players, key=lambda x: x[0].rating, reverse=reverse)
         return sorted_players
 
-    def get_players_sorted_by_score(self, available_players):
+    @staticmethod
+    def get_players_sorted_by_score(available_players):
         sorted_players = sorted(available_players, key=lambda x: x[1], reverse=True)
         return sorted_players
 
@@ -213,7 +216,7 @@ class TournamentCtrl(Ctrl):
             all_players = self.tournament_model.players
 
             if sort is None or sort not in sorts_methods.keys():
-                players = (all_players)
+                players = all_players
             else:
                 players = sorts_methods[sort](all_players)
             show_tournament_rating = not self.actions_rules()[1][1]
@@ -235,6 +238,3 @@ class TournamentCtrl(Ctrl):
         self.show_available_actions()
 
         return
-
-if __name__ == '__main__':
-    pass

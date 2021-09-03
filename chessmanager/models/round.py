@@ -12,7 +12,7 @@ class Round:
         self.state = "PROCESS"
         self.start_at = datetime.now()
         self.end_at = ""
-    
+
     def mark_as_done(self):
         self.orphan_player = None
         self.state = 'DONE'

@@ -1,14 +1,14 @@
-from chessmanager.models.schemas.error import *
-# from chessmanager.models.schemas.type import time_handler
+from chessmanager.models.schemas.error import SchemaNotFoundKeyError
+from chessmanager.models.schemas.error import SchemaEmptyFoundError
 
 from datetime import date
+
 
 class Schema:
     def __init__(self, config=None):
         if config is not None:
             if len(config.keys()) == 0:
                 raise SchemaEmptyFoundError(config)
-                
             self.required_keys = []
             for config_key in config.keys():
                 config_field = config[config_key]
@@ -37,11 +37,9 @@ class Schema:
                 except KeyError:
                     config_field['type'] = str
 
-
                 if config_field['required']:
                     self.required_keys.append(config_key)
 
-                    
         self.config = config
         self.is_already_loaded = False
         self.load()
@@ -60,12 +58,13 @@ class Schema:
         except KeyError:
             return False
 
-    def is_valide_field_type(self, field):
+    @staticmethod
+    def is_valide_field_type(field):
         if field['type'] is date:
             try:
-                field_date = date.fromisoformat(field['value'])
+                date.fromisoformat(field['value'])
                 return True
-            
+
             except ValueError:
                 return False
 
@@ -74,7 +73,6 @@ class Schema:
                 field['type'](field['value'])
                 return True
 
-        
             except ValueError:
                 return False
 
@@ -83,13 +81,13 @@ class Schema:
         if field['value'] is not None and field['value'] != "":
             if self.is_valide_field_type(field):
                 return True
-                
+
         else:
             if not field['required']:
                 return True
 
         return False
-    
+
     def set_field_value(self, field_name, value):
         if self.is_exist_field(field_name):
             old_field_value = self.config[field_name]['value']
@@ -108,7 +106,7 @@ class Schema:
     def load(self):
         ready_to_load = {}
         config = self.get_schema_input()
-        
+
         for field in config.keys():
             if self.is_already_loaded:
                 if not self.is_valide_field(field):
@@ -117,7 +115,6 @@ class Schema:
         self.__dict__.update(ready_to_load)
         self.is_already_loaded = True
         return True
-
 
 
 if __name__ == '__main__':

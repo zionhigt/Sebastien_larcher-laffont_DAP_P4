@@ -1,5 +1,5 @@
 from chessmanager.views.table import Table
-from chessmanager.local.local import _t
+from chessmanager.local.local import t as _t
 
 from datetime import date
 from termcolor import colored as _c
@@ -10,18 +10,26 @@ class View:
         self.path = "Chessmanager>"
         self.helper_menu = "Pour naviguer dans les menus, entrez le numeros de ligne de l'actions"
 
+    @staticmethod
+    def compute_age(birthday):
+
+        birth_date = date.fromisoformat(birthday)
+        birth_year = birth_date.year
+        now_date = date.today()
+        return now_date.year - birth_year
+
     def get_helper_menu(self):
         return self.helper_menu
 
     def get_helper_field(self):
         exemple_default = _c('Valeur par défaut', 'yellow')
-        exemple_required_without_default = self.format_question_from_field("Champ requis",{'required': True,'default': ""})
-        exemple_norequired_without_default = self.format_question_from_field("Optionel",{'required': False,'default': ""})
+        exemple_required = self.format_question_from_field("Champ requis", {'required': True, 'default': ""})
+        exemple_norequired = self.format_question_from_field("Optionel", {'required': False, 'default': ""})
         helper_field_list = [
             _c("----------------------------------------------------------------------------------\n", 'white'),
             f"({exemple_default})\t|ENTRER| pour conserver la valeur par default\n",
-            f"{exemple_required_without_default}\tEntrez une valeur correcte pour ce champ\n",
-            f"{exemple_norequired_without_default}\t\t|ENTRER| pour laisser vide\n",
+            f"{exemple_required}\tEntrez une valeur correcte pour ce champ\n",
+            f"{exemple_norequired}\t\t|ENTRER| pour laisser vide\n",
             "[/q]\t\t\tQuitter l'édition\n",
             "[help]\t\t\tAfficher cette aide\n",
             "----------------------------------------------------------------------------------\n"
@@ -35,7 +43,7 @@ class View:
         if not lazy:
             if response_input == '':
                 return self.ask(question, False)
-            
+
         return response_input
 
     def format_question_from_field(self, field_name, field_config):
@@ -43,7 +51,7 @@ class View:
         field_name = f" {_t(field_name)} "
         if field_config['required']:
             field_text = f"{_c(field_name, 'grey', 'on_white')}{_c('*', 'red', 'on_white')}"
-        else: 
+        else:
             field_text = f"{_c(field_name, 'grey', 'on_white')}"
 
         if field_config['default'] != "" and field_config['default'] is not None:
@@ -52,11 +60,12 @@ class View:
                 default_value = self.format_date(field_config['default'])
             default = f"({_c(default_value, 'yellow')})"
         else:
-            default =  ""
+            default = ""
 
         return f"{field_text}> {default}"
 
-    def format_date(self, date_str):
+    @staticmethod
+    def format_date(date_str):
         date_cls = date.fromisoformat(date_str)
         return date_cls.strftime("%d/%m/%Y")
 
@@ -72,9 +81,21 @@ class View:
             default_month = ""
             default_day = ""
 
-        year_question = self.format_question_from_field("--> Année", {'required': True, 'default': default_year, 'type': int})
-        month_question = self.format_question_from_field("--> Mois", {'required': True, 'default': default_month, 'type': int})
-        day_question = self.format_question_from_field("--> Jour", {'required': True, 'default': default_day, 'type': int})
+        year_question = self.format_question_from_field("--> Année", {
+            'required': True,
+            'default': default_year,
+            'type': int
+        })
+        month_question = self.format_question_from_field("--> Mois", {
+            'required': True,
+            'default': default_month,
+            'type': int
+        })
+        day_question = self.format_question_from_field("--> Jour", {
+            'required': True,
+            'default': default_day,
+            'type': int
+        })
 
         year = self.ask(year_question)
         if default_year == "":
@@ -106,6 +127,7 @@ class View:
         for field in schema.keys():
             question = self.format_question_from_field(field, schema[field])
             already_asked = False
+            current_field = model.get_field(field)
             while not model.is_valide_field(field) or not already_asked:
                 if already_asked and user_choice != "":
                     self.print_error(f"Valeur inattendue pour le champ {_t(field)} = {user_choice}")
@@ -120,11 +142,10 @@ class View:
                 if user_choice == "" and current_field['required']:
                     self.print_error('Ce champ est requis')
                 if user_choice.upper() == "/Q":
-                        return False
+                    return False
                 if user_choice.upper() == "HELP":
                     self.print_help(self.get_helper_field())
                     continue
-                    
 
                 model.set_field_value(field, user_choice)
                 already_asked = True
@@ -136,7 +157,8 @@ class View:
         print('\n')
         return True
 
-    def get_menu_helper(self):
+    @staticmethod
+    def get_menu_helper():
         text = """
         How to use Chess Manager ?
         During your navigation a menu list of actions
@@ -144,33 +166,38 @@ class View:
         """
         return text
 
-    def print_help(self, text):
+    @staticmethod
+    def print_help(text):
         print(_c(f"\n{text}\n", 'yellow'))
         return
 
-    def print_sucess(self, text):
+    @staticmethod
+    def print_sucess(text):
         print(_c(f"\n{text}\n", 'green'))
-    
-    def print_info(self, text):
+
+    @staticmethod
+    def print_info(text):
         print(_c(f"\n{text}\n", 'blue'))
 
-    def print_error(self, text):
+    @staticmethod
+    def print_error(text):
         print(_c(f"\n{text}\n", 'red'))
 
-    def print_table(self, head, body):
+    @staticmethod
+    def print_table(head, body):
         body.insert(0, head)
         table = Table(body)
         print('\n')
         print(table)
 
-    def show_menu(self, actions):
+    @staticmethod
+    def show_menu(actions):
         index = 0
         print("\n")
         for menu_element in actions:
             element_hidden = menu_element[1]
             if not element_hidden:
                 element_text = f"[{index}]  {menu_element[0]}"
-                element_separator = "-"*(len(element_text) + 5)
                 print(element_text)
                 index += 1
         print('\n')
@@ -178,8 +205,3 @@ class View:
     def show(self, actions):
         self.show_menu(actions)
         return self.ask(_c(self.path, 'cyan'), False)
-
-if __name__ == '__main__':
-
-    print(View.show.__doc__)
-

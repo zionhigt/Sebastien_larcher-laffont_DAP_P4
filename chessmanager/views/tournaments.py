@@ -1,10 +1,7 @@
-from os import path
 from chessmanager.views.view import View
-from chessmanager.local.local import _t
+from chessmanager.local.local import t as _t
 
 from termcolor import colored as _c
-
-from datetime import date
 
 
 class TournamentsView(View):
@@ -12,10 +9,6 @@ class TournamentsView(View):
         super().__init__()
 
         self.path = path
-    
-    def show_unloaded_helper(self):
-        self.print_help(self.helper_unloaded_menu)
-        return
 
     def show_tournaments_table(self, available_tournaments, select=False):
 
@@ -42,8 +35,3 @@ class TournamentsView(View):
         self.show_tournaments_table(available_tournament, select=True)
         response_input = self.ask(f"\nPour charger un tournois entrez son {_c('ID', 'grey', 'on_white')}")
         return response_input
-        
-if __name__ == '__main__':
-
-    print(TournamentsView.show.__doc__)
-

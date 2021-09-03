@@ -4,9 +4,10 @@ from chessmanager.models.match import Match
 
 from random import randint
 
+
 class RoundCtrl(Ctrl):
     def __init__(self, view):
-        self.view = view
+        super().__init__(view)
         self.current_round = None
         self.rounds = []
         self.players_in_game = ()
@@ -24,7 +25,7 @@ class RoundCtrl(Ctrl):
             "mark_as_done": self.mark_as_done,
             "return": self.exit
         }
-        
+
     def set_path(self):
         self.view.compute_path(self.current_round.tournament.name['value'], self.current_round.name)
 
@@ -56,7 +57,7 @@ class RoundCtrl(Ctrl):
                     match_to_edit.played = True
                 else:
                     self.edit_scores()
-            
+
             except ValueError:
                 if winner.upper() == 'NULL':
                     match_to_edit.add_points([0.5, 0.5])
@@ -70,12 +71,12 @@ class RoundCtrl(Ctrl):
     def show_matchs(self):
         self.view.show_available_matchs(self.current_round.matchs)
         self.show_available_actions()
-        
+
     def show_available_actions(self):
         actions_available = self.actions_rules()
         self.show_actions(actions_available, self.action_callback)
         return
-    
+
     @compute_available_action
     def actions_rules(self):
         """Define what field will be show when round will be loaded"""
@@ -100,7 +101,6 @@ class RoundCtrl(Ctrl):
             self.show_available_actions()
 
         return
-
 
     def add_match(self, player_s1, player_s2):
         match = Match(player_s1, player_s2)
@@ -131,12 +131,18 @@ class RoundCtrl(Ctrl):
                     player_s2 = players_s2[j]
                 else:
                     self.view.print_error(
-                        f"Impossible de créer un match, {player_s1[0].first_name['value']} {player_s1[0].last_name['value']} à déjà rencontré tout le monde")
+                        " ".join([
+                            "Impossible de créer un match,",
+                            {player_s1[0].first_name['value']},
+                            {player_s1[0].last_name['value']},
+                            "à déjà rencontré tout le monde"
+                        ]))
                     return
 
             self.add_match(player_s1, player_s2)
             del players_s2[j]
         return
+
     def exclude_orphan_player(self, players):
         if len(players) % 2:
             self.current_round.orphan_player = self.current_round.players[-1]
@@ -176,4 +182,3 @@ class RoundCtrl(Ctrl):
 
         if self.current_round.orphan_player is not None:
             self.current_round.orphan_player[1] += 1
-

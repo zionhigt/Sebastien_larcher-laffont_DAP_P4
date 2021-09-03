@@ -1,43 +1,46 @@
 from chessmanager.views.view import View
+from chessmanager.local.local import t as _t
 
 from termcolor import colored as _c
 
-from chessmanager.local.local import _t
-
 from datetime import date, datetime
+
 
 class TournamentView(View):
     def __init__(self, from_path):
+        super().__init__()
         self.from_path = from_path
         self.compute_path()
 
     def compute_path(self, current_name="Tournoi"):
-        self.path =  f"{self.from_path}{current_name}>"
+        self.path = f"{self.from_path}{current_name}>"
 
     def compute_age(self, birthday):
 
         birth_date = date.fromisoformat(birthday)
         birth_year = birth_date.year
         now_date = date.today()
-        return (now_date.year - birth_year)
+        return now_date.year - birth_year
 
-    def show_help(self):
+    @staticmethod
+    def show_help():
         symbole = _c('*', 'cyan')
-        help = [
+        sp = '\n\t\t\t\t'
+        helper = [
             "------------------------------------------AIDE TOURNOI------------------------------------\n",
-            "Liste des joueur par noms\tAffiche la liste des joueurs inscrit au tournoi\n\t\t\t\ttriée par ordre alphabétique du nom de famille",
+            f"Liste des joueur par noms\tListe des participants au tournoi{sp}triés par nom de famille.",
             "-------------------------------------------------------------------------------------------",
-            "Classement du tournois\t\tAffiche la liste des joueurs inscrit au tournoi\n\t\t\t\ttriée par ordre décroissant des points dans le tournoi",
+            f"Classement du tournois\t\tListe des participants au tournoi{sp}classé par points dans le tournoi.",
             "-------------------------------------------------------------------------------------------",
-            "Ajouter un joueur\t\tPermet d'inscrire un joueur au tournoi\n\t\t\t\tou de créer un nouveau profil qui\n\t\t\t\tseras ajouté a la liste général",
+            "Ajouter un joueur\t\tGérer les joueur du tournois.",
             "-------------------------------------------------------------------------------------------",
-            "Démarer le tournoi\t\tGénere la premiere rondes de matchs",
+            "Démarer le tournoi\t\tGénere la premiere rondes de matchs.",
             "-------------------------------------------------------------------------------------------",
-            f"Abréviations {symbole}\t\t\tCT: Classement du Tournoi\n\t\t\t\tCG: Classement Général",
+            f"Abréviations {symbole}\t\t\tCT: Classement du Tournoi{sp}CG: Classement Général",
             "-------------------------------------------------------------------------------------------",
             ]
-        
-        print("\n".join(help))
+
+        print("\n".join(helper))
 
     def show_players_out_of_tournament(self, available_players, select=False):
         players_index = range(len(available_players))
@@ -57,8 +60,8 @@ class TournamentView(View):
 
     def show_available_players(self, available_players, select=False, tournament_rating=False):
         players_index = range(len(available_players))
-        tournament_players_scores_sorted = sorted(available_players, key=lambda x: x[1], reverse=True)
-        tournament_players_rating = [tournament_players_scores_sorted.index(player) + 1 for player in available_players]
+        scores_sorted = sorted(available_players, key=lambda x: x[1], reverse=True)
+        rating = [scores_sorted.index(player) + 1 for player in available_players]
         head = ['ID', 'Nom', 'Prénom', 'Age', 'Score', "CG*", "CT*"]
         players_info = list(map(lambda x, y, z: [
                 str(y),
@@ -68,7 +71,7 @@ class TournamentView(View):
                 str(x[1]),
                 str(x[0].rating),
                 str(z)
-            ], available_players, players_index, tournament_players_rating))
+            ], available_players, players_index, rating))
         if len(players_info) > 0:
             if not select:
                 head = head[1:]
@@ -79,7 +82,6 @@ class TournamentView(View):
             self.print_table(head, players_info)
 
     def show_available_rounds(self, available_rounds, select=False):
-        is_done = False
         rounds_index = range(len(available_rounds))
         head = ['ID', 'Date de début', 'Nb joueurs', 'Nom', 'État', 'Date de fin']
         rounds_info = list(map(lambda x, y: [
@@ -112,9 +114,3 @@ class TournamentView(View):
         if len(matchs_info) > 0:
 
             self.print_table(head, matchs_info)
-
-
-if __name__ == '__main__':
-
-    print(TournamentView.show.__doc__)
-

@@ -1,6 +1,7 @@
 import numpy as np
 from termcolor import colored as _c
 
+
 class Table:
     def __init__(self, body):
         self.head_text_color = "grey"
@@ -20,11 +21,12 @@ class Table:
         self.string_body = "\n".join(string_rows)
         return self.string_body
 
-    def text_to_cell(self, text, width=0):
+    @staticmethod
+    def text_to_cell(text, width=0):
         hmany_dots_left = int(width/2)
         dots_left = " " * hmany_dots_left
         dots_right = " " * (width - hmany_dots_left)
-        
+
         return f"| {dots_left}{text}{dots_right} "
 
     def make_columns(self):
@@ -40,7 +42,6 @@ class Table:
                     column[index_none_value] = " "
                 except ValueError:
                     index_none = False
-
 
             max_width = len(max(column, key=len))
             if max_width > self.max_char_per_cell:
@@ -66,6 +67,5 @@ class Table:
         return string_columns
 
     def __str__(self):
-        
-        return self.string_body
 
+        return self.string_body

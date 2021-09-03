@@ -1,6 +1,7 @@
 from chessmanager.models.schemas.schema import Schema
 from datetime import date
 
+
 class Player(Schema):
     def __init__(self):
         config = {
@@ -11,5 +12,3 @@ class Player(Schema):
         super().__init__(config)
 
         self.rating = 0
-
-    

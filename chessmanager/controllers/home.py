@@ -10,11 +10,8 @@ from chessmanager.controllers.player import PlayerCtrl
 from chessmanager.views.rating import RatingView
 from chessmanager.controllers.rating import RatingCtrl
 
-from termcolor import colored as _c
-
 import json
 
-from random import randint
 
 BASE_CTRL = BaseCtrl()
 tournaments_view = TournamentsView("Chessmanager>Tournois>")
@@ -25,7 +22,8 @@ tournaments_CTRL = TournamentsCtrl(tournaments_view, BASE_CTRL)
 PLAYER_CTRL = PlayerCtrl(player_view, BASE_CTRL)
 RATING_CTRL = RatingCtrl(rating_view, BASE_CTRL)
 
-def makeItems(model, config):
+
+def make_items(model, config):
     for field in config:
         if config[field] != "default":
             value = config[field]
@@ -45,22 +43,22 @@ new_tournament = {
 
 tournament_index = BASE_CTRL.add_tournament()
 tournament = BASE_CTRL.get_tournament_by_index(tournament_index)
-makeItems(tournament, new_tournament)
+make_items(tournament, new_tournament)
 
 with open("./data/json/players.json", 'r') as players_file:
     players = json.load(players_file)
     for player_config in players:
         player_index = BASE_CTRL.add_player()
         player = BASE_CTRL.get_player_by_index(player_index)
-        makeItems(player, player_config)
+        make_items(player, player_config)
         tournament.add_player(player)
-
 
     players_file.close()
 
+
 class HomeCtrl(Ctrl):
     def __init__(self, view):
-        self.view = view
+        super().__init__(view)
         self.base_actions = [
             ('Gérer les tournois', False, 'run_tournament'),
             ('Gérer les Joueurs', False, 'run_player'),

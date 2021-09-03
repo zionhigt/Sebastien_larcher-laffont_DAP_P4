@@ -7,10 +7,11 @@ def compute_available_action(rules):
 
 
 class Ctrl:
-    def __init__(self):
-        pass
+    def __init__(self, view):
+        self.view = view
 
-    def exit(self):
+    @staticmethod
+    def exit():
         return False
 
     def show_actions(self, actions_available, callbacks):

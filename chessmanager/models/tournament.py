@@ -3,6 +3,7 @@ from chessmanager.models.schemas.type import time_handler
 
 from datetime import date
 
+
 class Tournament(Schema):
     def __init__(self):
         config = {
@@ -17,7 +18,7 @@ class Tournament(Schema):
 
         self.rounds = []
 
-        #[(class Player, score)]
+        # [(class Player, score)]
         self.players = []
 
         self.state = "AWAIT"
@@ -47,16 +48,13 @@ class Tournament(Schema):
                     tournament_player_score += scores_sections[players_index][player_section]
             self.update_player_set_score(player[0], tournament_player_score)
 
-
-
-
     def add_players(self, players):
         added_players = []
         for player in players:
             self.add_player(player)
             added_players.append(player)
         return added_players
-        
+
     def add_player(self, player):
         if player is list:
             return self.add_players(player)
@@ -75,8 +73,3 @@ class Tournament(Schema):
         except ValueError:
             self.rounds.append(t_round)
             self.add_round(t_round)
-
-
-if __name__ == '__main__':
-
-    print("self.get():\n\t" + tournament.get.__doc__)

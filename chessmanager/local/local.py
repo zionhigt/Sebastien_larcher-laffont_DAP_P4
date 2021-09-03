@@ -20,11 +20,11 @@ class Local:
             }
         }
 
-    def _t(self, key):
+    def t(self, key):
         try:
             return self.translator[self.local][key]
         except KeyError:
             return key
 
-t = Local()
-_t = t._t
+
+t = Local().t

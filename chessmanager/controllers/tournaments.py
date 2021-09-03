@@ -3,16 +3,16 @@ from chessmanager.controllers.ctrl import compute_available_action
 
 from chessmanager.views.tournament import TournamentView
 from chessmanager.controllers.tournament import TournamentCtrl
-from chessmanager.models.tournament import Tournament
 
 from termcolor import colored as _c
 
+
 class TournamentsCtrl(Ctrl):
     def __init__(self, view, base_ctrl):
-        self.view = view
+        super().__init__(view)
         self.base_ctrl = base_ctrl
-        tournamentView = TournamentView(self.view.path)
-        self.tournament_ctrl = TournamentCtrl(tournamentView, self.base_ctrl)
+        tournament_view = TournamentView(self.view.path)
+        self.tournament_ctrl = TournamentCtrl(tournament_view, self.base_ctrl)
 
         # {text, hidden, callback}
         self.base_actions = [
@@ -35,7 +35,7 @@ class TournamentsCtrl(Ctrl):
         self.view.show_helper()
         self.show_available_actions()
         return
-    
+
     @compute_available_action
     def actions_rules(self):
         """Define what field will be show when tournament will be unloaded"""
@@ -44,7 +44,7 @@ class TournamentsCtrl(Ctrl):
         if len(self.base_ctrl.get_all_tournament()) != 0:
             base_actions[1][1] = False
             base_actions[2][1] = False
-        
+
         return base_actions
 
     def show_available_actions(self):
@@ -53,7 +53,7 @@ class TournamentsCtrl(Ctrl):
 
         actions_available = self.actions_rules()
         self.show_actions(actions_available, self.action_callback)
-        return 
+        return
 
     def asking_for_load_tournaments(self):
         """Asking user to load an available tournament
@@ -70,11 +70,10 @@ class TournamentsCtrl(Ctrl):
         self.show_available_actions()
         return
 
-
     def load_tournament(self, tournament_index):
         """Turn a tournament to load
         Arguments:
-            tournament_index -- index of the tournament saved into the base controller 
+            tournament_index -- index of the tournament saved into the base controller
         """
 
         tournament = self.base_ctrl.get_tournament_by_index(tournament_index)
@@ -90,10 +89,9 @@ class TournamentsCtrl(Ctrl):
         """Asking user for tournament informations
         """
         new_tournament = self.tournament_maker()
-        if new_tournament != False:
+        if new_tournament is not False:
             is_tournament_to_load = self.view.ask(f"Charger ce tournoi {_c('[O/N]', 'grey', 'on_white')} ?")
             if is_tournament_to_load.upper() == "O":
-                self.current_tournament_index = new_tournament
                 self.load_tournament(new_tournament)
 
             elif is_tournament_to_load.upper() == 'N':
@@ -110,7 +108,7 @@ class TournamentsCtrl(Ctrl):
         # return index of global list
         new_tournament_index = self.base_ctrl.add_tournament()
         new_tournament = self.base_ctrl.get_tournament_by_index(new_tournament_index)
-        if self.view.asking_for_model(new_tournament) != False:
+        if self.view.asking_for_model(new_tournament) is not False:
             self.view.print_sucess(f"Le tournoi {new_tournament.get_field('name')['value']} a été créé")
         else:
             self.base_ctrl.delete_tournament_by_index(new_tournament_index)
