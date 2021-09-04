@@ -3,6 +3,8 @@ from chessmanager.models.schemas.type import time_handler
 
 from datetime import date
 
+from tinydb import where
+
 
 class Tournament(Schema):
     def __init__(self):
@@ -14,7 +16,8 @@ class Tournament(Schema):
                 'time_handler': {'required': True, 'default': "bullet", 'type': time_handler},
                 'comment': {}
             }
-        super().__init__(config)
+        query_tournament = lambda x=None: (where('name') == self.to_dict()['name'])
+        super().__init__(config, 'Matchs', query_tournament)
 
         self.rounds = []
 

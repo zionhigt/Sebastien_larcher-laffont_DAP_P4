@@ -7,6 +7,15 @@ class BaseCtrl:
         self.available_players = []
         self.available_tournament = []
 
+    def deserialize(self):
+        pass
+    
+    def serialize(self):
+        
+        players = self.get_all_players()
+        for player in players:
+            player.serialize()
+
     def add_player(self):
 
         player = Player()

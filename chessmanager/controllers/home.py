@@ -63,11 +63,13 @@ class HomeCtrl(Ctrl):
             ('Gérer les tournois', False, 'run_tournament'),
             ('Gérer les Joueurs', False, 'run_player'),
             ('Éditer les classements', False, 'run_rating'),
+            ('Quitter Chessmanager', False, 'quit')
         ]
         self.actions_callbacks = {
             'run_tournament': tournaments_CTRL.run,
             'run_player': PLAYER_CTRL.run,
-            'run_rating': RATING_CTRL.run
+            'run_rating': RATING_CTRL.run,
+            'quit': self.quit
         }
 
     def show_available_actions(self):
@@ -76,5 +78,16 @@ class HomeCtrl(Ctrl):
         self.show_actions(self.base_actions, self.actions_callbacks)
         self.show_available_actions()
 
+    @staticmethod
+    def quit():
+        raise KeyboardInterrupt
+
     def run(self):
-        self.show_available_actions()
+        try:
+            print('Chargement en cours')
+            BASE_CTRL.deserialize()
+            self.show_available_actions()
+
+        except KeyboardInterrupt:
+            print("\nSauvegarde en cours...")
+            BASE_CTRL.serialize()

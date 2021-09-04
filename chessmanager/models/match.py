@@ -1,7 +1,12 @@
+from chessmanager.models.schemas.schema import Schema
 from random import randint
 
 
-class Match:
+from chessmanager.models.schemas.schema import Schema
+from tinydb import where
+
+
+class Match(Schema):
     def __init__(self, player_s1, player_s2):
         self.player_s1 = player_s1[0]
         self.player_s2 = player_s2[0]
@@ -11,6 +16,8 @@ class Match:
         self.score_s1 = 0.0
         self.score_s2 = 0.0
         self.played = False
+        query_match = lambda x=None: (where('player_s1') == self.player_s1 & where('player_s1') == self.player_s1)
+        super().__init__(None, 'Matchs', query_match)
 
     def add_points(self, scores):
 

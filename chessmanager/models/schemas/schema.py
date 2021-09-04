@@ -1,11 +1,15 @@
 from chessmanager.models.schemas.error import SchemaNotFoundKeyError
 from chessmanager.models.schemas.error import SchemaEmptyFoundError
 
+from tinydb import TinyDB, where
+from datetime import datetime
 from datetime import date
+from os import path
 
 
 class Schema:
-    def __init__(self, config=None):
+    def __init__(self, config=None, table="_default", query_model=None):
+        
         if config is not None:
             if len(config.keys()) == 0:
                 raise SchemaEmptyFoundError(config)
@@ -43,6 +47,13 @@ class Schema:
         self.config = config
         self.is_already_loaded = False
         self.load()
+        # timestamp = str(datetime.now().timestamp()).split('.')[0]
+        timestamp = "1630676601"
+        db_folder = './data/database/'
+        db_file_name = f"chess_db_{timestamp}.json"
+        self.DB = TinyDB(path.join(db_folder, db_file_name))
+        self.table = self.DB.table(table)
+        self.query_model = query_model
 
     def get_field(self, field_name):
 
@@ -116,6 +127,45 @@ class Schema:
         self.is_already_loaded = True
         return True
 
+    def to_dict(self):
+        _dict = {}
+        excluded_attr = [
+            'required_keys',
+            'config',
+            'is_already_loaded',
+            'query_model',
+            'table',
+            'DB'
+            ]
+        for attr in self.__dict__:
+            if attr not in excluded_attr:
+                attribute = self.__dict__[attr]
+                if attr in self.config.keys():
+                    attribute = self.__dict__[attr]['value']
+                _dict[attr] = attribute
+        return _dict
+
+    def get_db_model_id(self):
+        model = self.to_dict
+        tiny_model = self.table.get(self.query_model())
+        if tiny_model is not None:
+            return tiny_model.doc_id
+        else:
+            return False
+        
+
+    def serialize(self):
+        is_model_in_db = self.get_db_model_id()
+        model = self.to_dict()
+        if is_model_in_db is False:
+            # insertables_players.append(player)
+            # insert model in table
+            self.table.insert(model)
+        else:
+            # model_query = lambda x=None: ((where('last_name') == player['last_name']) &
+            # (where('first_name') == player['first_name']) &
+            # (where('birth_date') == player['birth_date']))
+            self.table.update(model, self.query_model())
 
 if __name__ == '__main__':
 
