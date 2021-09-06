@@ -9,7 +9,7 @@ from os import path
 
 class Schema:
     def __init__(self, config=None, table="_default", query_model=None):
-        
+        self.config = config
         if config is not None:
             if len(config.keys()) == 0:
                 raise SchemaEmptyFoundError(config)
@@ -43,10 +43,10 @@ class Schema:
 
                 if config_field['required']:
                     self.required_keys.append(config_key)
+            self.config = config
+            self.is_already_loaded = False
+            self.load()
 
-        self.config = config
-        self.is_already_loaded = False
-        self.load()
         # timestamp = str(datetime.now().timestamp()).split('.')[0]
         timestamp = "1630676601"
         db_folder = './data/database/'
@@ -140,32 +140,47 @@ class Schema:
         for attr in self.__dict__:
             if attr not in excluded_attr:
                 attribute = self.__dict__[attr]
-                if attr in self.config.keys():
-                    attribute = self.__dict__[attr]['value']
+                if self.config is not None:
+                    if attr in self.config.keys():
+                        attribute = self.__dict__[attr]['value']
+                if type(attribute) in [date, datetime]:
+                    attribute = attribute.timestamp()
                 _dict[attr] = attribute
         return _dict
 
     def get_db_model_id(self):
-        model = self.to_dict
         tiny_model = self.table.get(self.query_model())
         if tiny_model is not None:
             return tiny_model.doc_id
         else:
             return False
-        
-
-    def serialize(self):
-        is_model_in_db = self.get_db_model_id()
-        model = self.to_dict()
-        if is_model_in_db is False:
-            # insertables_players.append(player)
-            # insert model in table
-            self.table.insert(model)
+    
+    def get_model_by_db_id(self, id):
+        record = self.table.get(doc_id=id)
+        if record:
+            return record
         else:
-            # model_query = lambda x=None: ((where('last_name') == player['last_name']) &
-            # (where('first_name') == player['first_name']) &
-            # (where('birth_date') == player['birth_date']))
-            self.table.update(model, self.query_model())
+            return None
+    
+    def is_serializable(self):
+        if 'required_keys' in self.__dict__.keys():
+            for required in self.required_keys:
+                if not self.is_valide_field(required):
+                    return False
+        return True
+
+    def serialize(self, model=None):
+        if self.is_serializable():
+            if model is None:
+                model = self.to_dict()
+            is_model_in_db = self.get_db_model_id()
+            if is_model_in_db is False:
+                self.table.insert(model)
+            else:
+                self.table.update(model, self.query_model())
+
+            return self.get_db_model_id()
+
 
 if __name__ == '__main__':
 

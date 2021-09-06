@@ -11,7 +11,7 @@ from chessmanager.views.rating import RatingView
 from chessmanager.controllers.rating import RatingCtrl
 
 import json
-
+import sys
 
 BASE_CTRL = BaseCtrl()
 tournaments_view = TournamentsView("Chessmanager>Tournois>")
@@ -33,27 +33,25 @@ def make_items(model, config):
     model.load()
 
 
-new_tournament = {
-    'name': "chessmanager",
-    'at_date': "default",
-    'at_place': "cherbourg",
-    'turns': "default",
-    'time_handler': "default"
-}
+# new_tournament = {
+#     'name': "chessmanager",
+#     'at_date': "default",
+#     'at_place': "cherbourg",
+#     'turns': "default",
+#     'time_handler': "default"
+# }
 
-tournament_index = BASE_CTRL.add_tournament()
-tournament = BASE_CTRL.get_tournament_by_index(tournament_index)
-make_items(tournament, new_tournament)
+# tournament_index = BASE_CTRL.add_tournament()
+# tournament = BASE_CTRL.get_tournament_by_index(tournament_index)
+# make_items(tournament, new_tournament)
 
-with open("./data/json/players.json", 'r') as players_file:
-    players = json.load(players_file)
-    for player_config in players:
-        player_index = BASE_CTRL.add_player()
-        player = BASE_CTRL.get_player_by_index(player_index)
-        make_items(player, player_config)
-        tournament.add_player(player)
-
-    players_file.close()
+# with open("./data/json/players.json", 'r') as players_file:
+#     players = json.load(players_file)
+#     for player_config in players:
+#         player_index = BASE_CTRL.add_player()
+#         player = BASE_CTRL.get_player_by_index(player_index)
+#         make_items(player, player_config)
+#     players_file.close()
 
 
 class HomeCtrl(Ctrl):
@@ -84,10 +82,11 @@ class HomeCtrl(Ctrl):
 
     def run(self):
         try:
-            print('Chargement en cours')
+            print('Chargement en cours...')
             BASE_CTRL.deserialize()
             self.show_available_actions()
 
         except KeyboardInterrupt:
             print("\nSauvegarde en cours...")
             BASE_CTRL.serialize()
+            sys.exit(0)

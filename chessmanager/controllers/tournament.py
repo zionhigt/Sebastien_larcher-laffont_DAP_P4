@@ -97,6 +97,7 @@ class TournamentCtrl(Ctrl):
                 self.current_round.players = self.get_players_sorted_by_score(players_by_rate)
 
             self.roundCtrl.run(self.tournament_model.rounds, persistant=False)
+            print(self.tournament_model.rounds)
 
         return
 

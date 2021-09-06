@@ -17,7 +17,7 @@ class Tournament(Schema):
                 'comment': {}
             }
         query_tournament = lambda x=None: (where('name') == self.to_dict()['name'])
-        super().__init__(config, 'Matchs', query_tournament)
+        super().__init__(config, 'Tournaments', query_tournament)
 
         self.rounds = []
 
