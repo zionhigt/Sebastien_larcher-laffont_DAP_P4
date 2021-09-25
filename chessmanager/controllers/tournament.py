@@ -71,7 +71,6 @@ class TournamentCtrl(Ctrl):
 
     def run_round(self):
         self.roundCtrl.set_path()
-        print(self.tournament_model.rounds)
         self.roundCtrl.run(self.tournament_model.rounds)
         if self.current_round.state == "DONE":
             self.tournament_model.update_players_scores()

@@ -6,7 +6,7 @@ from chessmanager.models.match import Match
 from chessmanager.views.view import View
 
 from datetime import datetime
-
+from os import path, system
 from tinydb import TinyDB
 
 
@@ -15,8 +15,15 @@ class BaseCtrl:
         self.view = View()
         self.available_players = []
         self.available_tournament = []
+        data_folder = '.\data'
+        database_folder = 'database'
+        if not path.isdir(data_folder):
+            system(f"mkdir {data_folder}")
+        if not path.isdir(database_folder):
+            system(f"mkdir {path.join(data_folder, database_folder)}")
 
-        self.db_path = "./data/database/chess_db_save.json"
+        self.db_path = path.join(data_folder, database_folder, "chess_db_save.json")
+
         self.DB = TinyDB(self.db_path)
 
     def add_player(self):
@@ -180,7 +187,6 @@ class BaseCtrl:
             player_index = self.add_player()
             player = self.get_player_by_index(player_index)
             self.make_items(player, player_config)
-            # tournament.add_player(player)
 
         for tournament_config in tiny_tournaments:
             item_config = {
