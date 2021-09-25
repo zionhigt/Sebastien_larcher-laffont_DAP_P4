@@ -5,6 +5,4 @@ courses/
 .idea/
 __pycache__/
 flake_rapport.txt
-launcher.bat
-raport_flake8.txt
-rapport_test.txt
+.vscode/
