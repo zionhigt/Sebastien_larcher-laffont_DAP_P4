@@ -184,10 +184,11 @@ class View:
         print(_c(f"\n{text}\n", 'red'))
 
     @staticmethod
-    def print_table(head, body):
+    def print_table(head, body, sticky=False):
         body.insert(0, head)
         table = Table(body)
-        print('\n')
+        if sticky is False:
+            print('\n')
         print(table)
 
     @staticmethod

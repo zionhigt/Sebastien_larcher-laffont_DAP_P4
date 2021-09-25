@@ -17,7 +17,7 @@ class TournamentsCtrl(Ctrl):
         # {text, hidden, callback}
         self.base_actions = [
             ('Créer un tournois', False, 'create_tournament'),
-            ('Charger un tournoi', True, 'load_tournament'),
+            ('Éditer un tournoi', True, 'load_tournament'),
             ('Liste des tournois', True, 'show_tournaments'),
             ('Retour au menu principal', False, 'return'),
             ('Aide', False, 'show_helper')

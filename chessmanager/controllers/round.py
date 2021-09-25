@@ -108,15 +108,16 @@ class RoundCtrl(Ctrl):
         return
 
     def is_already_met(self, player_s1, player_s2):
+        
         rounds_matchs = [match for t_round in self.rounds for match in t_round.matchs]
-
         all_meetings = [[match.player_s1, match.player_s2] for match in rounds_matchs]
-
-        meeting = [player_s1, player_s2]
-        reverse_meeting = list(meeting)
-        reverse_meeting.reverse()
-
-        return (meeting in all_meetings) or (reverse_meeting in all_meetings)
+        is_met = False
+        for meeting in all_meetings:
+            is_met = player_s1[0] in meeting and player_s2[0] in meeting
+            is_met = player_s2[0] in meeting and player_s1[0] in meeting
+            if is_met:
+                return True
+        return is_met
 
     def make_first_match(self):
         players_s1, players_s2 = self.split_players_list()
@@ -143,30 +144,22 @@ class RoundCtrl(Ctrl):
             del players_s2[j]
         return
 
-    def exclude_orphan_player(self, players):
-        if len(players) % 2:
-            self.current_round.orphan_player = self.current_round.players[-1]
-            return players[:-1]
-        else:
-            return players
-
     def split_players_list(self):
         players = self.current_round.players
-        players = self.exclude_orphan_player(players)
         split_offset = int(len(players)/2)
         self.players_in_game = (players[:split_offset], players[split_offset:])
         return self.players_in_game
 
     def make_match(self):
         players = [player for player in self.current_round.players]
-        players = self.exclude_orphan_player(players)
         while len(players) >= 2:
             j = 1
             player_s1 = players[0]
             player_s2 = players[j]
             while self.is_already_met(player_s1, player_s2):
-                j += 1
-                player_s2 = players[j]
+                if j < len(players):
+                    j += 1
+                    player_s2 = players[j]
 
             self.add_match(player_s1, player_s2)
             del players[j]
@@ -179,6 +172,3 @@ class RoundCtrl(Ctrl):
             self.make_first_match()
         else:
             self.make_match()
-
-        if self.current_round.orphan_player is not None:
-            self.current_round.orphan_player[1] += 1

@@ -99,7 +99,7 @@ class TournamentView(View):
                 rounds_info = list(map(lambda x: x[1:], rounds_info))
             self.print_table(head, rounds_info)
 
-    def show_available_matchs(self, available_matchs):
+    def show_available_matchs(self, available_matchs, sticky=False):
         matchs_index = range(len(available_matchs))
         head = ['C J1', 'Joueur 1', 'PTS J1', 'PTS J2', 'Joueur 2', 'C J2']
         matchs_info = list(map(lambda x, y: [
@@ -112,5 +112,4 @@ class TournamentView(View):
             ], available_matchs, matchs_index))
 
         if len(matchs_info) > 0:
-
-            self.print_table(head, matchs_info)
+            self.print_table(head, matchs_info, sticky)

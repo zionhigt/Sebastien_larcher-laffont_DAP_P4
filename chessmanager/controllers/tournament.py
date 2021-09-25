@@ -60,7 +60,9 @@ class TournamentCtrl(Ctrl):
 
     def show_tournament_matchs(self):
         tournament_matchs = [matchs for t_round in self.tournament_model.rounds for matchs in t_round.matchs]
-        self.view.show_available_matchs(tournament_matchs)
+        for t_round in self.tournament_model.rounds:
+            self.view.print_info(t_round.name + " ↓")
+            self.view.show_available_matchs(t_round.matchs, True)
         self.show_available_actions()
 
     def mark_as_done(self):
@@ -70,6 +72,7 @@ class TournamentCtrl(Ctrl):
 
     def run_round(self):
         self.roundCtrl.set_path()
+        print(self.tournament_model.rounds)
         self.roundCtrl.run(self.tournament_model.rounds)
         if self.current_round.state == "DONE":
             self.tournament_model.update_players_scores()
@@ -234,6 +237,9 @@ class TournamentCtrl(Ctrl):
 
     def run(self, tournament):
         self.tournament_model = tournament
+        if len(self.tournament_model.rounds) > 0:
+            self.current_round = self.tournament_model.rounds[-1]
+            self.roundCtrl.run(self.tournament_model.rounds, False)
         self.view.compute_path(tournament.name['value'])
         self.show_available_actions()
 
