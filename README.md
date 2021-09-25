@@ -17,6 +17,13 @@ Programme de gestion pour les tournois de jeux d'échecs avec système Suisse.
 - Lancez la commande `[python] -m pip install -r requirements.txt`
 - Démarrer le programme avec la commande `[python] start.py`
 
+## PEP8
+
+- [Documentation flake8 configuration](https://flake8.pycqa.org/en/latest/user/configuration.html)
+- Reportez-vous à la documentation pour configurer flake8 pour les systèmes UNIX
+- Lancez la commande `[python] -m flake8 ./ > rapport_flake8.txt`
+- Vous obtiendrez un rapport flake8 dans le fichier rapport_flake8.txt
+- Ce fichier restera vide si aucune violation n'a été rencontrée
 
   
 ## Auteur
