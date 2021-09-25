@@ -93,7 +93,7 @@ class BaseCtrl:
 
         tiny_match = {
             "player_s1": 0,
-            "player_s1": 1,
+            "player_s2": 1,
             "score_s1": 0,
             "score_s2": 0,
             "colors_s1": "",
@@ -159,7 +159,6 @@ class BaseCtrl:
 
             self.view.print_sucess("Partie sauvegardée avec succés")
 
-
     @staticmethod
     def make_items(model, config):
         for field in config:
@@ -195,7 +194,10 @@ class BaseCtrl:
             tournament_index = self.add_tournament()
             tournament = self.get_tournament_by_index(tournament_index)
             self.make_items(tournament, item_config)
-            tournament.players = [[self.get_player_by_index(index_player), score_player] for index_player, score_player in tournament_config['players']]
+            tournament.players = [
+                [self.get_player_by_index(index_player), score_player]
+                for index_player, score_player in tournament_config['players']
+                ]
             rounds = []
             for t_round in tournament_config['rounds']:
                 round = Round(t_round['name'], tournament)
@@ -220,11 +222,10 @@ class BaseCtrl:
                 round.end_at = end_at
 
                 rounds.append(round)
-            
+
             tournament.rounds = rounds
             tournament.state = tournament_config['state']
             tournament.started = tournament_config['started']
             tournament.ended = tournament_config['ended']
 
             self.view.print_sucess("Partie chargée avec succés")
-

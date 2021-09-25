@@ -59,7 +59,6 @@ class TournamentCtrl(Ctrl):
         self.show_available_actions()
 
     def show_tournament_matchs(self):
-        tournament_matchs = [matchs for t_round in self.tournament_model.rounds for matchs in t_round.matchs]
         for t_round in self.tournament_model.rounds:
             self.view.print_info(t_round.name + " ↓")
             self.view.show_available_matchs(t_round.matchs, True)

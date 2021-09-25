@@ -10,8 +10,6 @@ from chessmanager.controllers.player import PlayerCtrl
 from chessmanager.views.rating import RatingView
 from chessmanager.controllers.rating import RatingCtrl
 
-import json
-
 
 BASE_CTRL = BaseCtrl()
 tournaments_view = TournamentsView("Chessmanager>Tournois>")
@@ -21,6 +19,7 @@ rating_view = RatingView("Chessmanager>Classement>")
 tournaments_CTRL = TournamentsCtrl(tournaments_view, BASE_CTRL)
 PLAYER_CTRL = PlayerCtrl(player_view, BASE_CTRL)
 RATING_CTRL = RatingCtrl(rating_view, BASE_CTRL)
+
 
 class HomeCtrl(Ctrl):
     def __init__(self, view):
@@ -39,9 +38,9 @@ class HomeCtrl(Ctrl):
             'load': BASE_CTRL.load,
             'run_rating': RATING_CTRL.run
         }
+
     def show_available_actions(self):
         """Provide an actions handler for users navigation"""
-
         self.show_actions(self.base_actions, self.actions_callbacks)
         self.show_available_actions()
 

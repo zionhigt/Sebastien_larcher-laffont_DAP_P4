@@ -108,7 +108,6 @@ class RoundCtrl(Ctrl):
         return
 
     def is_already_met(self, player_s1, player_s2):
-        
         rounds_matchs = [match for t_round in self.rounds for match in t_round.matchs]
         all_meetings = [[match.player_s1, match.player_s2] for match in rounds_matchs]
         is_met = False
