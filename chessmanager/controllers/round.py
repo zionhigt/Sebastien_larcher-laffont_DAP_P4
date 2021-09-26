@@ -158,10 +158,13 @@ class RoundCtrl(Ctrl):
             while self.is_already_met(player_s1, player_s2):
                 if j < len(players):
                     j += 1
-                    player_s2 = players[j]
+                if len(players) == 0:
+                    j = 0
+                player_s2 = players[j]
 
             self.add_match(player_s1, player_s2)
-            del players[j]
+            if j != 0:
+                del players[j]
             del players[0]
 
         return

@@ -96,6 +96,7 @@ class TournamentsCtrl(Ctrl):
 
             elif is_tournament_to_load.upper() == 'N':
                 self.show_available_actions()
+                return
 
         self.show_available_actions()
         return

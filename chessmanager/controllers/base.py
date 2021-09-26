@@ -16,13 +16,12 @@ class BaseCtrl:
         self.available_players = []
         self.available_tournament = []
         data_folder = '.\data'
-        database_folder = 'database'
+        database_folder = path.join(data_folder, 'database')
         if not path.isdir(data_folder):
             system(f"mkdir {data_folder}")
-        if not path.isdir(database_folder):
-            system(f"mkdir {path.join(data_folder, database_folder)}")
+            system(f"mkdir {database_folder}")
 
-        self.db_path = path.join(data_folder, database_folder, "chess_db_save.json")
+        self.db_path = path.join(database_folder, "chess_db_save.json")
 
         self.DB = TinyDB(self.db_path)
 

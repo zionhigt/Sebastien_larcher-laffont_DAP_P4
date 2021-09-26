@@ -78,6 +78,17 @@ class TournamentCtrl(Ctrl):
         self.show_available_actions()
 
     def start(self):
+        hmany_turns = self.tournament_model.turns['value']
+        if hmany_turns > len(self.tournament_model.players) -1:
+            self.view.print_error(f"Pas assez de joueurs pour jouer {hmany_turns} tours")
+            keep_start = self.view.ask("Voulez vous démarer le tournois [O/N]?", False)
+            if keep_start.upper() == 'O':
+                self.tournament_model.turns['value'] = len(self.tournament_model.players) - 1
+                hmany_turns = self.tournament_model.turns['value']
+                self.view.print_info(f"Nombre de tours défini sur {hmany_turns}")
+            elif keep_start.upper() == 'N':
+                self.show_available_actions()
+                return
         self.add_round()
         self.tournament_model.started = True
         self.tournament_model.state = "PROCESS"
