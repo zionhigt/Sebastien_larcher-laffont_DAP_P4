@@ -11,6 +11,7 @@ class Local:
                 'first_name': 'Prénom',
                 'score': 'Score',
                 'rating': 'Rang',
+                'rate': 'Rang',
                 'comment': 'Description',
                 'time_handler': 'Contrôleur de temps',
                 'turns': 'Nombre de tours',

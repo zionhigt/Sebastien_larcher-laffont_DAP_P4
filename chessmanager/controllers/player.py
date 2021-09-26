@@ -54,7 +54,7 @@ class PlayerCtrl(Ctrl):
             else:
                 players = sorts_methods[sort](all_players)
 
-            self.view.show_available_players(players)
+            self.view.show_available_players(players, sort)
             self.show_available_actions()
             return
 
