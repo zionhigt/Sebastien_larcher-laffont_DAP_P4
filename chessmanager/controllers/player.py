@@ -7,6 +7,7 @@ class PlayerCtrl(Ctrl):
         super().__init__(view)
         self.base_ctrl = base_ctrl
 
+        # (wording, hidden, callback_name)
         self.base_actions = [
             ('Liste des joueurs par noms', True, 'show_players_by_name'),
             ('Classement des joueurs', True, 'show_players_by_rate'),
@@ -25,8 +26,9 @@ class PlayerCtrl(Ctrl):
     def actions_rules(self):
         base_actions = list(map(lambda x: list(x), self.base_actions))
         if len(self.base_ctrl.get_all_players()) != 0:
-            # No player
+            # 'show_players_by_name'
             base_actions[0][1] = False
+            # 'show_players_by_rate'
             base_actions[1][1] = False
 
         return base_actions

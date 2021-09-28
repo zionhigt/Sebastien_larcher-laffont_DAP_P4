@@ -16,7 +16,8 @@ class TournamentCtrl(Ctrl):
         self.tournament_model = None
         self.current_tournament_index = None
         self.current_round = None
-        # {text, hidden, callback}
+
+        # (wording, hidden, callback_name)
         self.base_actions = [
             ('Liste des joueurs par noms', True, 'show_players_by_name'),
             ('Classement du tournois', True, 'show_players_by_score'),
@@ -44,6 +45,47 @@ class TournamentCtrl(Ctrl):
             'return': self.exit,
             'show_help': self.show_help
         }
+
+    @compute_available_action
+    def actions_rules(self):
+        """Define what field will be show when tournament will be loaded"""
+
+        base_actions = list(map(lambda x: list(x), self.base_actions))
+        if len(self.tournament_model.players) != 0:
+            # 'show_players_by_name'
+            base_actions[0][1] = False
+            if len(self.tournament_model.rounds) and self.tournament_model.rounds[0].state == "DONE":
+                # 'show_players_by_score'
+                base_actions[1][1] = False
+        # 'add_player'
+        base_actions[2][1] = self.tournament_model.started
+
+        if len(self.tournament_model.players) >= 2 and not self.tournament_model.started:
+            # 'start'
+            base_actions[3][1] = False
+            'show_rounds'
+
+        # 'show_rounds'
+        base_actions[4][1] = not self.tournament_model.started
+
+        if self.current_round and self.current_round.state != "DONE":
+            # 'run_round'
+            base_actions[5][1] = False
+
+        hmany_rounds = len(self.tournament_model.rounds)
+        hmany_turns = self.tournament_model.turns['value']
+        if hmany_rounds == hmany_turns and not self.tournament_model.ended:
+            if self.tournament_model.rounds[-1].state == "DONE":
+                # 'mark_as_done'
+                base_actions[6][1] = False
+
+        if len(self.tournament_model.rounds) != 0:
+            # 'show_round_matchs'
+            base_actions[7][1] = False
+            # 'show_tournament_matchs'
+            base_actions[8][1] = False
+
+        return base_actions
 
     def show_help(self):
         self.view.show_help()
@@ -79,7 +121,7 @@ class TournamentCtrl(Ctrl):
 
     def start(self):
         hmany_turns = self.tournament_model.turns['value']
-        if hmany_turns > len(self.tournament_model.players) -1:
+        if hmany_turns > len(self.tournament_model.players) - 1:
             self.view.print_error(f"Pas assez de joueurs pour jouer {hmany_turns} tours")
             keep_start = self.view.ask("Voulez vous démarer le tournois [O/N]?", False)
             if keep_start.upper() == 'O':
@@ -112,38 +154,6 @@ class TournamentCtrl(Ctrl):
 
         return
 
-    @compute_available_action
-    def actions_rules(self):
-        """Define what field will be show when tournament will be loaded"""
-
-        base_actions = list(map(lambda x: list(x), self.base_actions))
-        if len(self.tournament_model.players) != 0:
-            base_actions[0][1] = False
-            if len(self.tournament_model.rounds) and self.tournament_model.rounds[0].state == "DONE":
-                base_actions[1][1] = False
-
-        base_actions[2][1] = self.tournament_model.started
-
-        if len(self.tournament_model.players) >= 2 and not self.tournament_model.started:
-            base_actions[3][1] = False
-
-        base_actions[4][1] = not self.tournament_model.started
-
-        if self.current_round and self.current_round.state != "DONE":
-            base_actions[5][1] = False
-
-        hmany_rounds = len(self.tournament_model.rounds)
-        hmany_turns = self.tournament_model.turns['value']
-        if hmany_rounds == hmany_turns and not self.tournament_model.ended:
-            if self.tournament_model.rounds[-1].state == "DONE":
-                base_actions[6][1] = False
-
-        if len(self.tournament_model.rounds) != 0:
-            base_actions[7][1] = False
-            base_actions[8][1] = False
-
-        return base_actions
-
     def add_player(self):
         """Asking user to load an already known player or create a new one.
         Adding this player in the loaded tournament.
@@ -173,7 +183,7 @@ class TournamentCtrl(Ctrl):
         if not is_quit:
             self.tournament_model.add_players(players)
             if len(players) > 0:
-                sucess_message = f"à été ajouté au tounois {self.tournament_model.name['value']}"
+                sucess_message = f" à été ajouté au tounois {self.tournament_model.name['value']}"
                 if len(players) > 1:
                     sucess_message = f"\nont été ajoutés au tounois {self.tournament_model.name['value']}"
 

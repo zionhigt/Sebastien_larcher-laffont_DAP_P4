@@ -15,7 +15,7 @@ class BaseCtrl:
         self.view = View()
         self.available_players = []
         self.available_tournament = []
-        data_folder = '.\data'
+        data_folder = '.\\data'
         database_folder = path.join(data_folder, 'database')
         if not path.isdir(data_folder):
             system(f"mkdir {data_folder}")
@@ -26,14 +26,12 @@ class BaseCtrl:
         self.DB = TinyDB(self.db_path)
 
     def add_player(self):
-
         player = Player()
         self.available_players.append(player)
         player.rating = len(self.available_players)
         return self.available_players.index(player)
 
     def get_player_by_index(self, index):
-
         return self.available_players[index]
 
     def delete_player_by_index(self, index):
@@ -41,22 +39,18 @@ class BaseCtrl:
             del self.available_players[index]
 
     def get_all_players(self):
-
         return self.available_players
 
     def add_tournament(self):
 
         tournament = Tournament()
         self.available_tournament.append(tournament)
-
         return self.available_tournament.index(tournament)
 
     def get_tournament_by_index(self, index):
-
         return self.available_tournament[index]
 
     def get_all_tournament(self):
-
         return self.available_tournament
 
     def delete_tournament_by_index(self, index):

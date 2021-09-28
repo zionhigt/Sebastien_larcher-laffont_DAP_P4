@@ -31,21 +31,23 @@ class TournamentsCtrl(Ctrl):
             'show_helper': self.show_helper
         }
 
-    def show_helper(self):
-        self.view.show_helper()
-        self.show_available_actions()
-        return
-
     @compute_available_action
     def actions_rules(self):
         """Define what field will be show when tournament will be unloaded"""
 
         base_actions = list(map(lambda x: list(x), self.base_actions))
         if len(self.base_ctrl.get_all_tournament()) != 0:
+            # 'load_tournament'
             base_actions[1][1] = False
+            # 'show_tournaments'
             base_actions[2][1] = False
 
         return base_actions
+
+    def show_helper(self):
+        self.view.show_helper()
+        self.show_available_actions()
+        return
 
     def show_available_actions(self):
         """Showing availables actions when no tournament has loaded
@@ -78,7 +80,6 @@ class TournamentsCtrl(Ctrl):
 
         tournament = self.base_ctrl.get_tournament_by_index(tournament_index)
         if tournament.load():
-            # self.show_loaded_actions()
             self.tournament_ctrl.run(tournament)
             self.show_available_actions()
         else:
@@ -106,7 +107,8 @@ class TournamentsCtrl(Ctrl):
         return
 
     def tournament_maker(self):
-        # return index of global list
+        """return index of global list
+        """
         new_tournament_index = self.base_ctrl.add_tournament()
         new_tournament = self.base_ctrl.get_tournament_by_index(new_tournament_index)
         if self.view.asking_for_model(new_tournament) is not False:

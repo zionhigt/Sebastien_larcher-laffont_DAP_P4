@@ -2,7 +2,7 @@ from chessmanager.controllers.ctrl import Ctrl
 from chessmanager.controllers.ctrl import compute_available_action
 from chessmanager.models.match import Match
 
-from random import randint
+# from random import randint
 
 
 class RoundCtrl(Ctrl):
@@ -12,6 +12,7 @@ class RoundCtrl(Ctrl):
         self.rounds = []
         self.players_in_game = ()
 
+        # (wording, hidden, callback_name)
         self.base_actions = [
             ("voir les matchs", False, 'show_matchs'),
             ("Éditer les scores", False, 'edit_scores'),
@@ -21,10 +22,22 @@ class RoundCtrl(Ctrl):
 
         self.action_callback = {
             "show_matchs": self.show_matchs,
-            "edit_scores": self.edit_scores_dev,
+            "edit_scores": self.edit_scores,
             "mark_as_done": self.mark_as_done,
             "return": self.exit
         }
+
+    @compute_available_action
+    def actions_rules(self):
+        """Define what field will be show when round will be loaded"""
+
+        base_actions = list(map(lambda x: list(x), self.base_actions))
+        # "mark_as_done"
+        base_actions[2][1] = False
+        for match in self.current_round.matchs:
+            if not match.played:
+                base_actions[2][1] = True
+        return base_actions
 
     def set_path(self):
         self.view.compute_path(self.current_round.tournament.name['value'], self.current_round.name)
@@ -33,13 +46,13 @@ class RoundCtrl(Ctrl):
         self.current_round.mark_as_done()
         return
 
-    def edit_scores_dev(self):
-        pts = [(1, 0), (0, 1), (0.5, 0.5)]
-        for match in self.current_round.matchs:
-            pts_index = randint(0, 2)
-            match.add_points(pts[pts_index])
-            match.played = True
-        self.show_available_actions()
+    # def edit_scores_dev(self):
+    #     pts = [(1, 0), (0, 1), (0.5, 0.5)]
+    #     for match in self.current_round.matchs:
+    #         pts_index = randint(0, 2)
+    #         match.add_points(pts[pts_index])
+    #         match.played = True
+    #     self.show_available_actions()
 
     def edit_scores(self):
         self.view.show_available_matchs(self.current_round.matchs, select=True)
@@ -76,17 +89,6 @@ class RoundCtrl(Ctrl):
         actions_available = self.actions_rules()
         self.show_actions(actions_available, self.action_callback)
         return
-
-    @compute_available_action
-    def actions_rules(self):
-        """Define what field will be show when round will be loaded"""
-
-        base_actions = list(map(lambda x: list(x), self.base_actions))
-        base_actions[2][1] = False
-        for match in self.current_round.matchs:
-            if not match.played:
-                base_actions[2][1] = True
-        return base_actions
 
     def run(self, rounds, persistant=True):
         self.rounds = rounds

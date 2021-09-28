@@ -24,6 +24,8 @@ RATING_CTRL = RatingCtrl(rating_view, BASE_CTRL)
 class HomeCtrl(Ctrl):
     def __init__(self, view):
         super().__init__(view)
+
+        # (wording, hidden, callback_name)
         self.base_actions = [
             ('Gérer les tournois', False, 'run_tournament'),
             ('Gérer les Joueurs', False, 'run_player'),

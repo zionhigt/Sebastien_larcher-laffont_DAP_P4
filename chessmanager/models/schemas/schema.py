@@ -126,8 +126,13 @@ if __name__ == '__main__':
             }
         })
 
+    #  expected return
     print(schema.is_valide_field('name'))
+    # False
     print(schema.set_field_value('name', "chessmanager"))
     print(schema.is_valide_field('name'))
+    # True
     print(schema.set_field_value('name', ""))
     print(schema.is_valide_field('name'))
+    # True, cannot setting for wrong value after field validated
+    # Asign back the previous value
