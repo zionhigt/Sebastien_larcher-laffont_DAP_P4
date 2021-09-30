@@ -22,3 +22,14 @@ class Match:
         black_place = int(not white_place)
         self.colors[white_place] = "white"
         self.colors[black_place] = "black"
+
+    def serialize(self):
+        return {
+            "player_s1": self.available_players.index(self.player_s1),
+            "player_s2": self.available_players.index(self.player_s2),
+            "score_s1": self.score_s1,
+            "score_s2": self.score_s2,
+            "colors_s1": self.colors[0],
+            "colors_s2": self.colors[1],
+            "played": self.played
+        }

@@ -115,7 +115,6 @@ class RoundCtrl(Ctrl):
         is_met = False
         for meeting in all_meetings:
             is_met = player_s1[0] in meeting and player_s2[0] in meeting
-            is_met = player_s2[0] in meeting and player_s1[0] in meeting
             if is_met:
                 return True
         return is_met

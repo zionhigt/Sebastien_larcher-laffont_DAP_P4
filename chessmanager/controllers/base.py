@@ -63,98 +63,18 @@ class BaseCtrl:
         players_table.truncate()
         tournaments_table.truncate()
 
-        tiny_player = {
-            "last_name": "",
-            "first_name": "",
-            "birth_date": 0
-        }
-
-        tiny_tournament = {
-            'name': "",
-            'at_date': 0,
-            'at_place': "",
-            'turns': 0,
-            'time_handler': "",
-            'comment': "",
-            "state": "",
-            "started": "",
-            "ended": "",
-            "players": [],
-            "rounds": []
-        }
-
-        tiny_round = {
-            "name": "",
-            "matchs": [],
-            "start_at": "",
-            "end_at": "",
-            "state": ""
-        }
-
-        tiny_match = {
-            "player_s1": 0,
-            "player_s2": 1,
-            "score_s1": 0,
-            "score_s2": 0,
-            "colors_s1": "",
-            "colors_s2": "",
-            "played": False
-        }
-        for player in self.available_players:
-            ser_player = dict(tiny_player)
-            ser_player.update({
-                "last_name": player.last_name['value'],
-                "first_name": player.first_name['value'],
-                "birth_date": player.birth_date['value']
-            })
-            players_table.insert(ser_player)
+        ser_players = [player.serialize() for player in self.available_players]
+        players_table.insert_multiple(ser_players)
 
         for tournament in self.available_tournament:
-            ser_tournament = dict(tiny_tournament)
             t_players = [[self.available_players.index(player[0]), player[1]] for player in tournament.players]
             t_rounds = []
             for t_round in tournament.rounds:
-                round_matchs = []
-                for match in t_round.matchs:
-                    ser_match = dict(tiny_match)
-                    ser_match.update({
-                        "player_s1": self.available_players.index(match.player_s1),
-                        "player_s2": self.available_players.index(match.player_s2),
-                        "score_s1": match.score_s1,
-                        "score_s2": match.score_s2,
-                        "colors_s1": match.colors[0],
-                        "colors_s2": match.colors[1],
-                        "played": match.played
-                    })
-                    round_matchs.append(ser_match)
-
-                ser_round = dict(tiny_round)
-                end_at = ""
-                if t_round.end_at != "":
-                    end_at = t_round.end_at.timestamp()
-                ser_round.update({
-                    "name": t_round.name,
-                    "matchs": round_matchs,
-                    "start_at": t_round.start_at.timestamp(),
-                    "end_at": end_at,
-                    "state": t_round.state
-                })
-
+                round_matchs = [match.serialize() for match in t_round.matchs]
+                ser_round = t_round.serialize(round_matchs)
                 t_rounds.append(ser_round)
 
-            ser_tournament.update({
-                'name': tournament.name['value'],
-                'at_date': tournament.at_date['value'],
-                'at_place': tournament.at_place['value'],
-                'turns': tournament.turns['value'],
-                'time_handler': tournament.time_handler['value'],
-                'comment': tournament.comment['value'],
-                'state': tournament.state,
-                'started': tournament.started,
-                'ended': tournament.ended,
-                'players': t_players,
-                'rounds': t_rounds
-            })
+            ser_tournament = tournament.serialize(t_players, t_rounds)
             tournaments_table.insert(ser_tournament)
 
             self.view.print_sucess("Partie sauvegardée avec succés")

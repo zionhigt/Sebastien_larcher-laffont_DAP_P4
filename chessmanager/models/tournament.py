@@ -73,3 +73,18 @@ class Tournament(Schema):
         except ValueError:
             self.rounds.append(t_round)
             self.add_round(t_round)
+
+    def serialize(self, t_players, t_rounds):
+        return {
+            'name': self.name['value'],
+            'at_date': self.at_date['value'],
+            'at_place': self.at_place['value'],
+            'turns': self.turns['value'],
+            'time_handler': self.time_handler['value'],
+            'comment': self.comment['value'],
+            'state': self.state,
+            'started': self.started,
+            'ended': self.ended,
+            'players': t_players,
+            'rounds': t_rounds
+        }

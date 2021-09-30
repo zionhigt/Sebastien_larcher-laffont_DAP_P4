@@ -12,3 +12,10 @@ class Player(Schema):
         super().__init__(config)
 
         self.rating = 0
+
+    def serialize(self):
+        return {
+            "last_name": self.last_name['value'],
+            "first_name": self.first_name['value'],
+            "birth_date": self.birth_date['value']
+        }

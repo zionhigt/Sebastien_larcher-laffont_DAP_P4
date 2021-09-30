@@ -14,3 +14,16 @@ class Round:
     def mark_as_done(self):
         self.state = 'DONE'
         self.end_at = datetime.now()
+
+    def serialize(self, matchs):
+        end_at = ""
+        if self.end_at != "":
+            end_at = self.end_at.timestamp()
+
+        return {
+            "name": self.name,
+            "matchs": matchs,
+            "start_at": self.start_at.timestamp(),
+            "end_at": end_at,
+            "state": self.state
+        }
