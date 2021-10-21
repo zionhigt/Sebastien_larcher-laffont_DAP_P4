@@ -27,7 +27,7 @@ Programme de gestion pour les tournois de jeux d'échecs avec système Suisse.
 - Ce fichier restera vide si aucune violation n'a été rencontrée
 ### HTML
 - Lancez la commande `[PYTHON] -m flake8 --format=html --htmldir=flake-report`
-- Ouvrez le fichier dans un navigateur web.
+- Ouvrez le fichier `flake-report/index.html` dans un navigateur web.
 - Les erreurs seront explicitement indiquées
   
 ## Auteur
