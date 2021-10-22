@@ -20,12 +20,13 @@ class Ctrl:
             if int(user_choice) in range(len(callbacks)):
                 action_index = int(user_choice)
             else:
-                raise ValueError
+                raise IndexError
 
             callback_name = actions_available[action_index][2]
             callback_methode = callbacks[callback_name]
             callback_methode()
 
-        except ValueError:
+        except IndexError:
+            self.view.print_error("Action impossible")
             self.show_actions(actions_available, callbacks)
         return
