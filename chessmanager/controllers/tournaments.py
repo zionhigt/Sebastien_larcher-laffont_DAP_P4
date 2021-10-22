@@ -19,16 +19,14 @@ class TournamentsCtrl(Ctrl):
             ('Créer un tournois', False, 'create_tournament'),
             ('Éditer un tournoi', True, 'load_tournament'),
             ('Liste des tournois', True, 'show_tournaments'),
-            ('Retour au menu principal', False, 'return'),
-            ('Aide', False, 'show_helper')
+            ('Retour au menu principal', False, 'return')
         ]
 
         self.action_callback = {
             'create_tournament': self.create_tournament,
             'load_tournament': self.asking_for_load_tournaments,
             'show_tournaments': self.show_tournaments,
-            'return': self.exit,
-            'show_helper': self.show_helper
+            'return': self.exit
         }
 
     @compute_available_action
@@ -43,11 +41,6 @@ class TournamentsCtrl(Ctrl):
             base_actions[2][1] = False
 
         return base_actions
-
-    def show_helper(self):
-        self.view.show_helper()
-        self.show_available_actions()
-        return
 
     def show_available_actions(self):
         """Showing availables actions when no tournament has loaded
