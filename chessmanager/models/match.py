@@ -23,10 +23,10 @@ class Match:
         self.colors[white_place] = "white"
         self.colors[black_place] = "black"
 
-    def serialize(self):
+    def serialize(self, players_ids):
         return {
-            "player_s1": self.available_players.index(self.player_s1),
-            "player_s2": self.available_players.index(self.player_s2),
+            "player_s1": players_ids[0],
+            "player_s2": players_ids[1],
             "score_s1": self.score_s1,
             "score_s2": self.score_s2,
             "colors_s1": self.colors[0],
