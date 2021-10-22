@@ -76,7 +76,6 @@ class BaseCtrl:
                     player_s2_id = self.available_players.index(match.player_s2)
                     ser_match = match.serialize(players_ids=[player_s1_id, player_s2_id])
                     round_matchs.append
-                round_matchs = [match.serialize() for match in t_round.matchs]
                 ser_round = t_round.serialize(round_matchs)
                 t_rounds.append(ser_round)
 
